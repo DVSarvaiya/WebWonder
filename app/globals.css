@@ -41,4 +41,41 @@
     opacity: 0;
   }
 }
+@keyframes floatUp {
+  0% { transform: translateY(0); opacity: 0.3; }
+  100% { transform: translateY(-100vh); opacity: 0; }
+}
+.animate-float-up {
+  animation: floatUp linear infinite;
+}
+
+@keyframes rovFloat {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+  50% { transform: translate(-50%, -50%) translateY(-5px); }
+}
+.animate-rov-float {
+  animation: rovFloat 4s ease-in-out infinite;
+}
+
+@keyframes seaPigFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+.animate-sea-pig {
+  animation: seaPigFloat 3s ease-in-out infinite;
+}
+@keyframes float-up {
+  0% {
+    transform: translateY(0);
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+}
+
+.animate-float-up {
+  animation: float-up linear infinite;
+}
 
