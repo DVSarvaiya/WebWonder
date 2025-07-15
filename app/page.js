@@ -38,7 +38,7 @@ export default function Home() {
       </div>
 
       <Bubbles />
-
+      <FishScene />
       
     </main>
   )
