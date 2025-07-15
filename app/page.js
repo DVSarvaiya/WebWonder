@@ -18,7 +18,7 @@ export default function Home() {
         <a href="#">Home</a>
         <a href="#">Creatures</a>
         <a href="#">Explore</a>
-        <a href="#">Technologies</a>
+        <a href="#">Technologies</a>``
         <a href="#">About Us</a>
       </div>
 
