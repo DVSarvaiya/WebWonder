@@ -165,6 +165,57 @@ const creatures = [
     name: "Dumbo Octopus",
     desc: "The Dumbo Octopus uses its ear-like fins to gracefully glide above the seafloor, often deeper than any other octopus. Its gentle, whimsical appearance belies a resilient creature perfectly adapted to the crushing pressure and cold of the abyss.",
     img: "/fishimages/dumbooctopus.png"
+  },
+    // ...existing 5 creatures
+  {
+    name: "Fangtooth",
+    desc: "Fangtooth fish possess the largest teeth in proportion to body size among ocean fish. Their gaping mouths and armor-like scales make them look fearsome, yet these fish are small and often shy, flourishing in depths of over 5,000 meters.",
+    img: "/fishimages/fangtooth.png"
+  },
+  {
+    name: "Barreleye Fish",
+    desc: "The Barreleye is instantly recognizable by its transparent head, through which its tubular, rotating eyes peer up for prey. This rare deep dweller can see both above and ahead at the same time, a true marvel of adaptation.",
+    img: "/fishimages/barreleye.png"
+  },
+  {
+    name: "Dragonfish",
+    desc: "Dragonfish are tiny but terrifying, with fang-lined jaws and bioluminescent organs. They emit light to communicate, lure prey, and hide from predators—masters of camouflage in the abyss.",
+    img: "/fishimages/dragonfish.png"
+  },
+  {
+    name: "Frilled Shark",
+    desc: "Known as a 'living fossil,' the Frilled Shark has a serpentine body and hundreds of needle-sharp teeth. It rarely surfaces, slithering through the dark with primitive grace reminiscent of the distant past.",
+    img: "/fishimages/frilledshark.png"
+  },
+  {
+    name: "Deep Sea Hatchetfish",
+    desc: "These small, silver-bodied fish have slender, hatchet-shaped forms and bioluminescent belly lights. They blend with the faint light above, becoming nearly invisible to lurking predators below.",
+    img: "/fishimages/hatchetfish.png"
+  },
+  {
+    name: "Black Swallower",
+    desc: "The Black Swallower can engulf prey larger than itself thanks to its stretchable stomach. Found in the pitch-black depths, it's one of the ocean's most voracious and mysterious eaters.",
+    img: "/fishimages/blackswallower.png"
+  },
+  {
+    name: "Yeti Crab",
+    desc: "Yeti Crabs thrive near hydrothermal vents, sporting furry arms covered in bacteria that help detoxify their environment. Their unique appearance and symbiotic relationships make them a deep sea icon.",
+    img: "/fishimages/yeticrab.png"
+  },
+  {
+    name: "Blobfish",
+    desc: "Famous for its gelatinous, 'melted' face, the Blobfish lives under immense pressure deep below the surface. Out of water, it looks sad and strange, but it's perfectly equipped to glide along the seafloor.",
+    img: "/fishimages/blobfish.png"
+  },
+  {
+    name: "Cookiecutter Shark",
+    desc: "Named for its feeding method, the Cookiecutter Shark gouges circular plugs of flesh from larger animals with its uniquely shaped teeth. Its glowing belly lures big fish right into its ambush.",
+    img: "/fishimages/cookiecuttershark.png"
+  },
+  {
+    name: "Pelican Eel",
+    desc: "Pelican Eels have enormous, gaping mouths capable of swallowing prey nearly their own size. Their whip-like tails illuminate in the dark, advertising their presence to unsuspecting prey.",
+    img: "/fishimages/pelicaneel.png"
   }
 ];
 
