@@ -6,7 +6,7 @@ export default function Bubbles() {
   const [bubbles, setBubbles] = useState([])
 
   useEffect(() => {
-    const count = 20
+    const count = 30
     const generated = Array.from({ length: count }).map(() => ({
       left: Math.random() * 100,
       delay: Math.random() * 5,
