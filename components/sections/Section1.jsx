@@ -1,19 +1,20 @@
-import React, { useState, useMemo,useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Info } from 'lucide-react';
+import SunlightZoneCard from './ZoneCard';
 
 export default function EpipelagicZone() {
     const [bubbles, setBubbles] = useState([]);
-    
-        // Precomputed bubbles to avoid hydration mismatch
-        useEffect(() => {
-            const generatedBubbles = Array.from({ length: 30 }).map((_, i) => ({
-                id: i,
-                left: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${3 + Math.random() * 4}s`,
-            }));
-            setBubbles(generatedBubbles);
-        }, []);
+
+    // Precomputed bubbles to avoid hydration mismatch
+    useEffect(() => {
+        const generatedBubbles = Array.from({ length: 30 }).map((_, i) => ({
+            id: i,
+            left: `${Math.random() * 100}%`,
+            animationDelay: `${Math.random() * 5}s`,
+            animationDuration: `${3 + Math.random() * 4}s`,
+        }));
+        setBubbles(generatedBubbles);
+    }, []);
     const [activeCreature, setActiveCreature] = useState(null);
 
     const creatures = [
@@ -111,6 +112,17 @@ export default function EpipelagicZone() {
                     <p className="text-cyan-200">90% of marine life lives in this zone</p>
                 </div>
             </div>
+
+            <SunlightZoneCard
+                title="Sunlight Zone"
+                description="The topmost ocean layer where sunlight supports photosynthesis and abundant marine life."
+                temperature="25–5°C"
+                lightLevel="100% - ~1%"
+                pressure="1–20 atm"
+                depthRange="0–200m"
+                creatures={['Dolphins', 'Tuna', 'Plankton', 'Sea Turtles', 'Sharks']}
+            />
+
         </section>
     );
 };
