@@ -160,7 +160,7 @@ export default function Home() {
       {/* Main title */}
       <div className="absolute inset-0 flex items-center justify-center z-20">
         <h1 className="text-white text-3xl md:text-5xl font-bold text-center drop-shadow-2xl">
-          Welcome to My 360° Experience
+          
         </h1>
       </div>
 
