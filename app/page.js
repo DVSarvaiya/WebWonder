@@ -1,9 +1,11 @@
 'use client'
 import Image from 'next/image'
+import Link from 'next/link' // ✅ Import Link to fix the error
 import { motion } from 'framer-motion'
 import FishScene from '@/components/FishScene'
 import Bubbles from '@/components/Bubbles'
 import AboutSection from '@/components/UnseenWorld'
+
 
 export default function Home() {
   return (
@@ -55,6 +57,7 @@ export default function Home() {
             CEAN
           </h1>
         </div>
+      </div>
       </main>
 
       {/* 🌊 Ocean Sections */}
@@ -122,6 +125,7 @@ export default function Home() {
       <Bubbles />
       <FishScene />
       <AboutSection/>
+      
     </main>
   )
 }
