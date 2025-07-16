@@ -1,54 +1,71 @@
-'use client'
-import Image from 'next/image'
-import { motion, useAnimation } from 'framer-motion'
-import { useEffect } from 'react'
+'use client';
+import Image from 'next/image';
+import { motion, useAnimation } from 'framer-motion';
+import { useEffect, useMemo } from 'react';
 
 // Ocean aurora background
 function AnimatedBackground() {
+  // Precompute random bubble properties only once for performance and smoothness
+  const bubbles = useMemo(() =>
+  Array.from({ length: 12 }).map(() => ({
+    size: 18 + Math.random() * 24,
+    left: Math.random() * 100,
+    bottom: -Math.random() * 80,
+    initialOpacity: 0.18 + Math.random() * 0.4,
+    animateY: -950 - Math.random() * 550,
+    duration: 10 + Math.random() * 7,
+    delay: Math.random() * 9,
+  }))
+, []);
+
+
   return (
     <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
       <motion.div
         className="absolute left-1/2 top-0 w-[140vw] h-[110vh] -translate-x-1/2"
-        initial={{ opacity: 0.85 }}
+        initial={{ opacity: 0.90 }}
         animate={{
-          opacity: [0.5, 0.75, 0.68, 0.55, 0.75],
+          opacity: [0.47, 0.7, 0.61, 0.55, 0.7],
           filter: [
-            'blur(34px) hue-rotate(0deg)',
-            'blur(60px) hue-rotate(20deg)',
-            'blur(60px) hue-rotate(-12deg)',
-            'blur(44px) hue-rotate(18deg)',
-            'blur(34px) hue-rotate(0deg)'
+            'blur(28px) hue-rotate(0deg)',
+            'blur(40px) hue-rotate(24deg)',
+            'blur(40px) hue-rotate(-15deg)',
+            'blur(32px) hue-rotate(18deg)',
+            'blur(28px) hue-rotate(0deg)'
           ]
         }}
-        transition={{ repeat: Infinity, duration: 13, ease: "easeInOut" }}
+        transition={{ repeat: Infinity, duration: 16, ease: "easeInOut" }}
         style={{
-          background: 'radial-gradient(ellipse at 50% 13%, #5eead4bb, #0ea5e9 62%, #0c1a2e 100%)'
+          background: 
+            'radial-gradient(ellipse at 50% 13%, #164e6377, #082f49 60%, #030916 100%)'
+            // starts with a very deep teal (with alpha), then dark blue, ending in almost-black
         }}
       />
-      {Array.from({ length: 30 }).map((_, i) => (
+      {bubbles.map((b, i) => (
         <motion.div
           key={i}
           className="absolute rounded-full bg-white/15 shadow-md"
           style={{
-            width: `${18 + Math.random() * 24}px`,
-            height: `${18 + Math.random() * 24}px`,
-            left: `${Math.random() * 100}vw`,
-            bottom: `-${Math.random() * 80}px`
+            width: `${b.size}px`,
+            height: `${b.size}px`,
+            left: `${b.left}vw`,
+            bottom: `${b.bottom}px`,
+            willChange: 'transform, opacity',
           }}
-          initial={{ y: 0, opacity: 0.16 + Math.random() * 0.51 }}
-          animate={{ y: -1250 - Math.random() * 650, opacity: 0 }}
+          initial={{ y: 0, opacity: b.initialOpacity }}
+          animate={{ y: b.animateY, opacity: 0 }}
           transition={{
-            duration: 12 + Math.random() * 9,
+            duration: b.duration,
             repeat: Infinity,
-            delay: i * 0.73
+            delay: b.delay,
           }}
         />
       ))}
     </div>
-  )
+  );
 }
 
-// Card animation variants — no filter/blur on hover now
+// Card animation variants
 const floatVariants = {
   idle: {
     y: [0, -12, 0, 14, 0],
@@ -68,16 +85,14 @@ const floatVariants = {
       damping: 16
     }
   }
-}
+};
 
 function FloatingWaterCard({ creature }) {
   const controls = useAnimation();
   useEffect(() => { controls.start("idle"); }, [controls]);
   return (
     <motion.div
-      className="group relative w-full max-w-xs md:max-w-md flex flex-col items-center bg-gradient-to-br from-sky-900/85 to-cyan-700/90
-      rounded-3xl shadow-2xl py-10 px-3 md:py-12 md:px-10 my-4 md:my-12 overflow-hidden border-2 border-cyan-300/50 
-      hover:border-cyan-100/70 transition-all duration-300"
+      className="group relative w-full max-w-xs md:max-w-md flex flex-col items-center bg-gradient-to-br from-sky-900/85 to-cyan-700/90 rounded-3xl shadow-2xl py-10 px-3 md:py-12 md:px-10 my-4 md:my-12 overflow-hidden border-2 border-cyan-300/50 hover:border-cyan-100/70 transition-all duration-300"
       variants={floatVariants}
       initial="idle"
       animate={controls}
@@ -103,7 +118,6 @@ function FloatingWaterCard({ creature }) {
         }}
         style={{ zIndex: 1 }}
       />
-      {/* Image with NO blur/brightness filter on hover */}
       <motion.div
         className="relative w-full h-44 md:h-52 flex-shrink-0 mb-6 mx-auto overflow-hidden rounded-2xl z-10 shadow-lg"
         whileHover={{
@@ -115,14 +129,15 @@ function FloatingWaterCard({ creature }) {
         }}
         transition={{ type: 'spring', stiffness: 120, damping: 14 }}
       >
-        <Image
-          src={creature.img}
-          alt={creature.name}
-          fill
-          className="object-cover"
-          sizes="(max-width: 700px) 100vw, 340px"
-          style={{ transition: 'transform 0.28s' }}
-        />
+       <Image
+  src={creature.img}
+  alt={creature.name}
+  fill
+  priority={creature.name === 'Anglerfish' || creature.name === 'Giant Squid'}
+  className="object-cover"
+  sizes="(max-width: 700px) 100vw, 340px"
+/>
+
       </motion.div>
       <div className="flex-1 z-10 text-left">
         <h2 className="text-3xl md:text-4xl font-black mb-2 capitalize tracking-wide drop-shadow-xl
@@ -137,7 +152,7 @@ function FloatingWaterCard({ creature }) {
         </p>
       </div>
     </motion.div>
-  )
+  );
 }
 
 const creatures = [
@@ -166,7 +181,6 @@ const creatures = [
     desc: "The Dumbo Octopus uses its ear-like fins to gracefully glide above the seafloor, often deeper than any other octopus. Its gentle, whimsical appearance belies a resilient creature perfectly adapted to the crushing pressure and cold of the abyss.",
     img: "/fishimages/dumbooctopus.png"
   },
-    // ...existing 5 creatures
   {
     name: "Fangtooth",
     desc: "Fangtooth fish possess the largest teeth in proportion to body size among ocean fish. Their gaping mouths and armor-like scales make them look fearsome, yet these fish are small and often shy, flourishing in depths of over 5,000 meters.",
@@ -251,7 +265,6 @@ export default function Page() {
           ))}
         </div>
       </div>
-      {/* Gradient animation for headline (optional, delete if not needed) */}
       <style jsx global>{`
         .animate-gradient-x {
           background-size: 300% 300%;
@@ -270,5 +283,5 @@ export default function Page() {
         }
       `}</style>
     </main>
-  )
+  );
 }
