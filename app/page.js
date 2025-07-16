@@ -3,11 +3,11 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import FishScene from '@/components/FishScene'
 import Bubbles from '@/components/Bubbles'
+import AboutSection from '@/components/UnseenWorld'
 
 export default function Home() {
   return (
-    <main className="relative w-full h-screen bg-[#000000] text-white overflow-hidden font-sans">
-
+    <main className="relative w-full h-screen bg-[#000000] text-white overflow-x-hidden font-sans">
 
       {/* Background bubbles or animations could go here */}
       <div className="absolute inset-0 z-0 overflow-hidden">
@@ -44,8 +44,8 @@ export default function Home() {
       </div>
 
       <Bubbles />
-
       <FishScene />
+      <AboutSection/>
     </main>
   )
 }

@@ -24,7 +24,6 @@ export default function AbyssopelagicZone() {
         <div className="absolute bottom-0 left-1/2 w-6 h-32 bg-red-400/30 rounded-t-full animate-pulse"></div>
         <div className="absolute bottom-0 right-1/3 w-3 h-20 bg-orange-400/30 rounded-t-full animate-pulse"></div>
       </div>
-
       {/* Zone header */}
       <div className="absolute top-20 left-1/2 transform -translate-x-1/2 text-center text-white z-10">
         <h2 className="text-5xl font-bold mb-4">Abyssopelagic Zone</h2>
@@ -73,7 +72,6 @@ export default function AbyssopelagicZone() {
           }}
         />
       )}
-
       {/* Deep sea creatures */}
       <div className="absolute dumbo-octopus">
         <div className="w-12 h-16 bg-pink-400/30 rounded-full relative">
@@ -82,7 +80,6 @@ export default function AbyssopelagicZone() {
           <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-6 h-8 bg-pink-400/30 rounded-b-full"></div>
         </div>
       </div>
-
       {/* Sea pigs */}
       <div className="absolute sea-pigs">
         {[...Array(5)].map((_, i) => (
@@ -99,14 +96,12 @@ export default function AbyssopelagicZone() {
           </div>
         ))}
       </div>
-
       {/* Seafloor debris */}
       <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-800/40 to-transparent">
         <div className="absolute bottom-2 left-1/4 w-3 h-3 bg-gray-600/60 rounded"></div>
         <div className="absolute bottom-4 left-1/2 w-2 h-2 bg-gray-600/60 rounded"></div>
         <div className="absolute bottom-3 right-1/3 w-4 h-2 bg-gray-600/60 rounded"></div>
       </div>
-
       {/* Zone info */}
       <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center text-white">
         <div className="bg-black/60 backdrop-blur-md rounded-2xl p-6 border border-gray-400/20">

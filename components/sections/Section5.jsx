@@ -45,7 +45,6 @@ export default function HadopelagicZone() {
         <h2 className="text-5xl font-bold mb-4">Hadopelagic Zone</h2>
         <p className="text-xl text-gray-400">The Trenches • 6000-11000m</p>
       </div>
-
       {/* Mariana Trench floor */}
       <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-900/60 to-transparent">
         <div className="absolute bottom-0 left-0 right-0 h-2 bg-gray-800/80"></div>
@@ -86,7 +85,6 @@ export default function HadopelagicZone() {
                 </div>
               </div>
             </div>
-
             <button
               onClick={scrollToTop}
               className="group bg-cyan-600 hover:bg-cyan-500 text-white px-8 py-4 rounded-lg transition-all duration-300 flex items-center space-x-3 mx-auto"
@@ -97,7 +95,6 @@ export default function HadopelagicZone() {
           </div>
         )}
       </div>
-
       {/* Philosophical ending */}
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-white opacity-60">
         <div className="space-y-8">
@@ -107,13 +104,11 @@ export default function HadopelagicZone() {
               than we do about our own ocean depths"
             </p>
           </div>
-
           <div className="floating-text" style={{ animationDelay: '2s' }}>
             <p className="text-lg text-gray-400">
               95% of the ocean remains unexplored
             </p>
           </div>
-
           <div className="floating-text" style={{ animationDelay: '4s' }}>
             <p className="text-lg text-gray-400">
               What mysteries await in the abyss?
@@ -121,7 +116,6 @@ export default function HadopelagicZone() {
           </div>
         </div>
       </div>
-
       {/* Ancient wreck silhouette */}
       <div className="absolute ancient-wreck opacity-20">
         <div className="w-48 h-32 bg-gray-700/30 transform rotate-12 rounded-lg"></div>
