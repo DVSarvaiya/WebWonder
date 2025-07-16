@@ -2,6 +2,9 @@
 import Image from "next/image";
 import Orb from "@/components/Orb";
 import Link from "next/link";
+import Timelines from "@/components/sections/TImeline";
+import { Timeline } from "gsap/gsap-core";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -163,6 +166,8 @@ export default function Home() {
           animation: fadeInUp 1s ease forwards;
         }
       `}</style>
+      <Timelines/>
+      <Footer/>
     </>
   );
 }
