@@ -78,4 +78,8 @@
 .animate-float-up {
   animation: float-up linear infinite;
 }
+/* styles/globals.css */
+html {
+  scroll-behavior: smooth;
+}
 

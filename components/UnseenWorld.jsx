@@ -3,7 +3,7 @@ import Bubbles from './Bubbles';
 
 const AboutSection = () => {
   return (
-    <section className="bg-gradient-to-b h-screen from-black to-gray-900 py-20 px-6">
+    <section className="bg-gradient-to-b h-screen scroll-smooth from-black to-gray-900 py-20 px-6">
       <div className="max-w-6xl mx-auto">
         <h2 className="text-4xl md:text-5xl font-bold text-center text-white mb-16">
           The <span className="text-cyan-400">Unseen World</span> Beneath
@@ -32,7 +32,7 @@ const AboutSection = () => {
           </div>
         </div>
       </div>
-      <Bubbles/>
+      {/*    */}
     </section>
   );
 };
