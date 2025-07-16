@@ -7,6 +7,7 @@ import Bubbles from '@/components/Bubbles'
 import AboutSection from '@/components/UnseenWorld'
 
 
+
 export default function Home() {
   return (
     <>
