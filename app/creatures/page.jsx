@@ -225,7 +225,7 @@ export default function Page() {
       <AnimatedBackground />
       <div className="relative z-10 flex flex-col items-center w-full min-h-screen px-0">
         <motion.h1
-          className="w-full text-center text-transparent bg-gradient-to-r from-cyan-200 via-blue-400 to-fuchsia-200 bg-clip-text text-4xl md:text-6xl lg:text-7xl font-black tracking-tight py-8 md:py-16 mb-2 drop-shadow-2xl animate-gradient-x"
+          className="w-full text-center text-transparent bg-gradient-to-r from-cyan-200 via-blue-400 to-blue-900 bg-clip-text text-4xl md:text-6xl lg:text-7xl font-black tracking-tight py-8 md:py-16 mb-2 drop-shadow-2xl animate-gradient-x"
           initial={{ opacity: 0, y: 70 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >

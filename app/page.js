@@ -7,13 +7,18 @@ export default function Home() {
   return (
     <>
       <main className="relative w-full h-screen overflow-hidden font-sans text-white flex flex-col items-center justify-center">
-        {/* 🌊 Background */}
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#021d3f] via-[#053067] to-[#0a1528] z-[-1]"></div>
-          <div className="absolute bottom-0 left-0 w-full h-60 bg-[#062e57] opacity-80 clip-wave1 z-[-1]"></div>
-          <div className="absolute bottom-0 left-0 w-full h-60 bg-[#083c75] opacity-50 clip-wave2 animate-waveSlow z-[-1]"></div>
-          <div className="absolute bottom-0 left-0 w-full h-52 bg-[#0c4c9c] opacity-30 clip-wave3 animate-waveSlowReverse z-[-1]"></div>
-        </div>
+
+        <video
+        className="absolute top-0 left-0 w-full h-full object-cover z-[-1] brightness-75"
+        autoPlay
+        loop
+        muted
+        playsInline
+      >
+        <source src="/bg4.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+<div className="absolute top-0 left-0 w-full h-full bg-black opacity-60 z-[-1]" />
 
         {/* 🌐 Top Navigation */}
         <div className="w-full flex justify-center gap-6 pt-8 z-20">
@@ -21,7 +26,7 @@ export default function Home() {
             { name: "Creatures", href: "/creatures" },
             { name: "Explore 3D", href: "#" },
             { name: "Donate", href: "#" },
-            { name: "Abyssal Odyssey", href: "#" }
+            { name: "Abyssal Odyssey", href: "/ab" }
           ].map((item, idx) => (
             <Link key={idx} href={item.href}>
               <div className="relative group px-6 py-3 text-white text-lg md:text-xl lg:text-2xl font-semibold backdrop-blur-md bg-white/5 border border-blue-400/50 rounded-full cursor-pointer overflow-hidden transition-transform duration-300 hover:scale-105 shadow-md shadow-blue-500/20">
@@ -60,7 +65,9 @@ export default function Home() {
       </main>
 
       {/* 🌊 Ocean Sections */}
-      <div className="w-full min-h-screen bg-gradient-to-b from-[#021d3f] via-[#053067] to-[#0a1528] flex items-center justify-center px-4 py-16 flex-col">
+      
+      <div className="w-full min-h-screen bg-gradient-to-b from-[#000408] via-[#000408] to-[#0a1528] flex items-center justify-center px-4 py-16 flex-col">
+        
         <div>
           <h1 className="text-white text-4xl font-bold mb-8">Our Oceans</h1>
         </div>
