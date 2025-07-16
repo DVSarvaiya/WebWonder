@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Eye, Zap } from 'lucide-react';
 import './section0.css'
+import SunlightZoneCard from './ZoneCard';
 
 export default function BathypelagicZone() {
     const [activeCreature, setActiveCreature] = useState(null);
@@ -130,6 +131,17 @@ export default function BathypelagicZone() {
                     <p className="text-purple-200">No sunlight has ever reached this depth</p>
                 </div>
             </div>
+
+            <SunlightZoneCard
+                title="Midnight Zone"
+                description="The aphotic zone in perpetual darkness. Bioluminescence becomes crucial for survival in this alien world."
+                temperature="4°C"
+                lightLevel="0%"
+                pressure="100-400 atm"
+                depthRange="1000–4000m"
+                creatures={['Anglerfish', 'Giant Squid', 'Deep-sea Jellyfish', 'Hatchetfish']}
+            />
+
         </section>
     );
 };

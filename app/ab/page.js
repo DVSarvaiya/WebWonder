@@ -10,6 +10,8 @@ import EpipelagicZone from '@/components/sections/Section1';
 import HadopelagicZone from '@/components/sections/Section5';
 import DepthMeter from '@/components/DepthMeter';
 import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
+
 
 export default function OceanJourney() {
   const containerRef = useRef(null);
@@ -47,6 +49,7 @@ export default function OceanJourney() {
       <BathypelagicZone />
       <AbyssopelagicZone />
       <HadopelagicZone />
+      <Footer/>
     </div>
   );
 };

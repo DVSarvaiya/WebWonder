@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BinaryIcon as Sonar, LineChart as Submarine } from 'lucide-react';
-
+import SunlightZoneCard from './ZoneCard';
 export default function MesopelagicZone() {
     const [sonarActive, setSonarActive] = useState(false);
 
@@ -105,6 +105,17 @@ export default function MesopelagicZone() {
                     <p className="text-blue-200">80% of creatures here produce their own light</p>
                 </div>
             </div>
+
+            <SunlightZoneCard
+                title="Twilight Zone"
+                description="The dysphotic zone where sunlight fades to darkness. Many creatures migrate daily between this zone and the surface."
+                temperature="5–20°C"
+                lightLevel="1% - 0%"
+                pressure="20–100 atm"
+                depthRange="200–1000m"
+                creatures={['Lanternfish', 'Squid', 'Siphonophores', 'Vampire Squid']}
+            />
+
         </section>
     );
 };
