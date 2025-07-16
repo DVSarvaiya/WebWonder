@@ -19,7 +19,6 @@ const Page = () => {
       </video>
 <div className="absolute top-0 left-0 w-full h-full bg-black opacity-60 z-[-1]" />
     
-      
 
       {/* Navigation Links */}
       <div className="w-full flex justify-center flex-wrap gap-6 pt-12 z-20 px-4">

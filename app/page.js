@@ -3,6 +3,7 @@ import Image from "next/image";
 import Orb from "@/components/Orb";
 import Link from "next/link";
 
+
 export default function Home() {
   return (
     <>
