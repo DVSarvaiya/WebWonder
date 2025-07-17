@@ -125,22 +125,23 @@ export default function BathypelagicZone() {
             </div>
 
             {/* Zone info */}
-            <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center text-white">
+            <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-center text-white">
                 <div className="bg-black/40 backdrop-blur-md rounded-2xl p-6 border border-purple-400/20">
                     <h3 className="text-2xl font-bold mb-2">Eternal Darkness</h3>
                     <p className="text-purple-200">No sunlight has ever reached this depth</p>
+                    <SunlightZoneCard
+                        title="Midnight Zone"
+                        description="The aphotic zone in perpetual darkness. Bioluminescence becomes crucial for survival in this alien world."
+                        temperature="4°C"
+                        lightLevel="0%"
+                        pressure="100-400 atm"
+                        depthRange="1000–4000m"
+                        creatures={['Anglerfish', 'Giant Squid', 'Deep-sea Jellyfish', 'Hatchetfish']}
+                    />
                 </div>
             </div>
 
-            <SunlightZoneCard
-                title="Midnight Zone"
-                description="The aphotic zone in perpetual darkness. Bioluminescence becomes crucial for survival in this alien world."
-                temperature="4°C"
-                lightLevel="0%"
-                pressure="100-400 atm"
-                depthRange="1000–4000m"
-                creatures={['Anglerfish', 'Giant Squid', 'Deep-sea Jellyfish', 'Hatchetfish']}
-            />
+
 
         </section>
     );

@@ -220,7 +220,7 @@ export default function Timelines() {
   }, {});
 
   return (
-    <div className="min-h-screen bg-gradient-to-top from-grey-900 to-black bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-t from-slate-900 via-blue-900 to-slate-900 relative overflow-x-hidden">
       <div className="fixed inset-0 opacity-10">
         <div className="absolute top-20 left-10 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
         <div className="absolute top-40 right-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse delay-1000"></div>

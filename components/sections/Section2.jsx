@@ -47,14 +47,16 @@ export default function MesopelagicZone() {
             </div>
 
             {/* Submarine */}
-            <div className="absolute submarine">
+            <div className="absolute top-60 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
                 <div className="relative">
-                    <div className="w-48 h-20 bg-gray-700 rounded-full relative shadow-lg">
+                    {/* Submarine body */}
+                    <div className="w-48 h-20 bg-gray-700 rounded-full shadow-lg relative">
                         <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-8 h-12 bg-gray-600 rounded-t-full"></div>
                         <div className="absolute left-4 top-6 w-12 h-8 bg-cyan-400/30 rounded-full"></div>
                         <div className="absolute right-4 top-6 w-4 h-4 bg-red-400 rounded-full animate-pulse"></div>
                     </div>
 
+                    {/* Sonar Button */}
                     <button
                         onClick={triggerSonar}
                         className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 rounded-full transition-colors duration-200 flex items-center space-x-2"
@@ -62,32 +64,34 @@ export default function MesopelagicZone() {
                         <Sonar size={16} />
                         <span>Sonar Ping</span>
                     </button>
+
+                    {/* Sonar Waves */}
+                    {sonarActive && (
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <div className="sonar-wave wave-1"></div>
+                            <div className="sonar-wave wave-2"></div>
+                            <div className="sonar-wave wave-3"></div>
+                        </div>
+                    )}
                 </div>
             </div>
 
-            {/* Sonar waves */}
-            {sonarActive && (
-                <div className="absolute submarine-position">
-                    <div className="sonar-wave wave-1"></div>
-                    <div className="sonar-wave wave-2"></div>
-                    <div className="sonar-wave wave-3"></div>
-                </div>
-            )}
 
-            {/* Lanternfish */}
+            {/* Lanternfish
             <div className="absolute lanternfish-group">
                 {[...Array(12)].map((_, i) => (
                     <div
                         key={i}
                         className="lanternfish"
                         style={{
-                            left: `${(i % 4) * 30}px`,
-                            top: `${Math.floor(i / 4) * 25}px`,
+                            left: `${(i % 4) * 10}vw`,
+                            top: `${Math.floor(i / 4) * 8}vh`,
                             animationDelay: `${i * 0.3}s`
                         }}
+
                     />
                 ))}
-            </div>
+            </div> */}
 
             {/* Jellyfish */}
             <div className="absolute jellyfish-1">
@@ -99,22 +103,23 @@ export default function MesopelagicZone() {
             </div>
 
             {/* Zone info */}
-            <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center text-white">
+            <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-center text-white">
                 <div className="bg-black/20 backdrop-blur-md rounded-2xl p-6 border border-white/10">
                     <h3 className="text-2xl font-bold mb-2">Bioluminescent Symphony</h3>
                     <p className="text-blue-200">80% of creatures here produce their own light</p>
+                    <SunlightZoneCard
+                        title="Twilight Zone"
+                        description="The dysphotic zone where sunlight fades to darkness. Many creatures migrate daily between this zone and the surface."
+                        temperature="5–20°C"
+                        lightLevel="1% - 0%"
+                        pressure="20–100 atm"
+                        depthRange="200–1000m"
+                        creatures={['Lanternfish', 'Squid', 'Siphonophores', 'Vampire Squid']}
+                    />
                 </div>
             </div>
 
-            <SunlightZoneCard
-                title="Twilight Zone"
-                description="The dysphotic zone where sunlight fades to darkness. Many creatures migrate daily between this zone and the surface."
-                temperature="5–20°C"
-                lightLevel="1% - 0%"
-                pressure="20–100 atm"
-                depthRange="200–1000m"
-                creatures={['Lanternfish', 'Squid', 'Siphonophores', 'Vampire Squid']}
-            />
+
 
         </section>
     );

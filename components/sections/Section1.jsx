@@ -66,31 +66,7 @@ export default function EpipelagicZone() {
                 <p className="text-xl text-cyan-200">The Sunlight Zone • 0-200m</p>
             </div>
 
-            {/* Interactive creatures */}
-            {creatures.map((creature) => (
-                <div
-                    key={creature.id}
-                    className="absolute cursor-pointer transform hover:scale-110 transition-transform duration-300"
-                    style={creature.position}
-                    onMouseEnter={() => setActiveCreature(creature.id)}
-                    onMouseLeave={() => setActiveCreature(null)}
-                >
-                    <div className={`creature-${creature.id} relative`}>
-                        <div className="w-12 h-12 bg-orange-400 rounded-full animate-pulse"></div>
-
-                        {activeCreature === creature.id && (
-                            <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 w-64 p-4 bg-black/80 backdrop-blur-md rounded-lg border border-cyan-400/30 text-white">
-                                <div className="flex items-center space-x-2 mb-2">
-                                    <Info size={16} className="text-cyan-400" />
-                                    <h3 className="font-bold text-cyan-300">{creature.name}</h3>
-                                </div>
-                                <p className="text-sm text-gray-300">{creature.fact}</p>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            ))}
-
+            
             {/* School of fish */}
             <div className="absolute fish-school">
                 {[...Array(8)].map((_, i) => (
@@ -106,22 +82,23 @@ export default function EpipelagicZone() {
             </div>
 
             {/* Zone info */}
-            <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-center text-white">
+            <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-center text-white">
                 <div className="bg-black/20 backdrop-blur-md rounded-2xl p-6 border border-white/10">
                     <h3 className="text-2xl font-bold mb-2">Rich Marine Life</h3>
                     <p className="text-cyan-200">90% of marine life lives in this zone</p>
+                    <SunlightZoneCard
+                        title="Sunlight Zone"
+                        description="The topmost ocean layer where sunlight supports photosynthesis and abundant marine life."
+                        temperature="25–5°C"
+                        lightLevel="100% - ~1%"
+                        pressure="1–20 atm"
+                        depthRange="0–200m"
+                        creatures={['Dolphins', 'Tuna', 'Plankton', 'Sea Turtles', 'Sharks']}
+                    />
                 </div>
             </div>
 
-            <SunlightZoneCard
-                title="Sunlight Zone"
-                description="The topmost ocean layer where sunlight supports photosynthesis and abundant marine life."
-                temperature="25–5°C"
-                lightLevel="100% - ~1%"
-                pressure="1–20 atm"
-                depthRange="0–200m"
-                creatures={['Dolphins', 'Tuna', 'Plankton', 'Sea Turtles', 'Sharks']}
-            />
+
 
         </section>
     );
