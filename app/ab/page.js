@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Fish, Waves, Eye, Zap, Anchor, MapPin } from 'lucide-react';
 import HeroSection from '@/components/sections/Section0';
 import AbyssopelagicZone from '@/components/sections/Section4';
 import BathypelagicZone from '@/components/sections/Section3';
@@ -11,6 +10,8 @@ import HadopelagicZone from '@/components/sections/Section5';
 import DepthMeter from '@/components/DepthMeter';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
+import Lenis from 'lenis';
+import Bubbles from '@/components/Bubbles';
 
 
 export default function OceanJourney() {
@@ -21,13 +22,13 @@ export default function OceanJourney() {
   useEffect(() => {
     const handleScroll = () => {
       if (!containerRef.current) return;
-      
+
       const scrollTop = window.pageYOffset;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = scrollTop / docHeight;
-      
+
       setScrollProgress(progress);
-      
+
       // Determine current zone based on scroll progress
       const zones = 6;
       const zoneIndex = Math.floor(progress * zones);
@@ -38,18 +39,39 @@ export default function OceanJourney() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    const lenis = new Lenis({
+      autoRaf: true,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    lenis.on('scroll', (e) => {
+      console.log(e);
+    });
+
+    return () => {
+      // Clean up on unmount
+      lenis.destroy();
+    };
+  }, []);
   return (
     <div ref={containerRef} className="relative">
       <Navigation currentZone={currentZone} />
       <DepthMeter progress={scrollProgress} />
-      
+      <Bubbles/>
       <HeroSection />
       <EpipelagicZone />
       <MesopelagicZone />
       <BathypelagicZone />
       <AbyssopelagicZone />
       <HadopelagicZone />
-      <Footer/>
+      <Footer />
     </div>
   );
 };

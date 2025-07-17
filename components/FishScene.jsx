@@ -10,7 +10,7 @@ export default function FishScene() {
     <Canvas camera={{ position: [2, -2, 5], fov: 70 }}>
       <ambientLight color={'#001bbd'} intensity={15} />
       <directionalLight position={[12, 8, 5]} intensity={1} />
-      <FishModel scale={1.5} position={[2,-2,0]}/>
+      <FishModel scale={1.45} position={[2,-2,0]}/>
       <OrbitControls/>
     </Canvas>
   )
