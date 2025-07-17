@@ -1,287 +1,200 @@
 'use client';
 import Image from 'next/image';
-import { motion, useAnimation } from 'framer-motion';
-import { useEffect, useMemo } from 'react';
-
-// Ocean aurora background
-function AnimatedBackground() {
-  // Precompute random bubble properties only once for performance and smoothness
-  const bubbles = useMemo(() =>
-  Array.from({ length: 12 }).map(() => ({
-    size: 18 + Math.random() * 24,
-    left: Math.random() * 100,
-    bottom: -Math.random() * 80,
-    initialOpacity: 0.18 + Math.random() * 0.4,
-    animateY: -950 - Math.random() * 550,
-    duration: 10 + Math.random() * 7,
-    delay: Math.random() * 9,
-  }))
-, []);
-
-
-  return (
-    <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-      <motion.div
-        className="absolute left-1/2 top-0 w-[140vw] h-[110vh] -translate-x-1/2"
-        initial={{ opacity: 0.90 }}
-        animate={{
-          opacity: [0.47, 0.7, 0.61, 0.55, 0.7],
-          filter: [
-            'blur(28px) hue-rotate(0deg)',
-            'blur(40px) hue-rotate(24deg)',
-            'blur(40px) hue-rotate(-15deg)',
-            'blur(32px) hue-rotate(18deg)',
-            'blur(28px) hue-rotate(0deg)'
-          ]
-        }}
-        transition={{ repeat: Infinity, duration: 16, ease: "easeInOut" }}
-        style={{
-          background: 
-            'radial-gradient(ellipse at 50% 13%, #164e6377, #082f49 60%, #030916 100%)'
-            // starts with a very deep teal (with alpha), then dark blue, ending in almost-black
-        }}
-      />
-      {bubbles.map((b, i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full bg-white/15 shadow-md"
-          style={{
-            width: `${b.size}px`,
-            height: `${b.size}px`,
-            left: `${b.left}vw`,
-            bottom: `${b.bottom}px`,
-            willChange: 'transform, opacity',
-          }}
-          initial={{ y: 0, opacity: b.initialOpacity }}
-          animate={{ y: b.animateY, opacity: 0 }}
-          transition={{
-            duration: b.duration,
-            repeat: Infinity,
-            delay: b.delay,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-// Card animation variants
-const floatVariants = {
-  idle: {
-    y: [0, -12, 0, 14, 0],
-    transition: {
-      y: { repeat: Infinity, duration: 4.2, ease: "easeInOut" }
-    },
-    scale: 1,
-    boxShadow: "0 12px 40px 0 rgba(24,97,122,0.17), 0 1px 4px 0 rgba(44,137,170,0.08)"
-  },
-  hover: {
-    y: -26,
-    scale: 1.07,
-    boxShadow: "0 44px 92px 0 rgba(44,137,170,0.29), 0 20px 50px 0 rgba(74,217,235,0.21)",
-    transition: {
-      type: "spring",
-      stiffness: 144,
-      damping: 16
-    }
-  }
-};
-
-function FloatingWaterCard({ creature }) {
-  const controls = useAnimation();
-  useEffect(() => { controls.start("idle"); }, [controls]);
-  return (
-    <motion.div
-      className="group relative w-full max-w-xs md:max-w-md flex flex-col items-center bg-gradient-to-br from-sky-900/85 to-cyan-700/90 rounded-3xl shadow-2xl py-10 px-3 md:py-12 md:px-10 my-4 md:my-12 overflow-hidden border-2 border-cyan-300/50 hover:border-cyan-100/70 transition-all duration-300"
-      variants={floatVariants}
-      initial="idle"
-      animate={controls}
-      whileHover="hover"
-      onHoverStart={() => controls.start("hover")}
-      onHoverEnd={() => controls.start("idle")}
-      style={{ backgroundClip: 'padding-box' }}
-    >
-      {/* Water shine overlay */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none rounded-3xl"
-        animate={{
-          background: [
-            "radial-gradient(ellipse at 35% 65%, rgba(209,250,250,0.17) 0, transparent 88%)",
-            "radial-gradient(ellipse at 74% 32%, rgba(190,245,255,0.15) 0, transparent 92%)",
-            "radial-gradient(ellipse at 24% 79%, rgba(190,245,255,0.09) 0, transparent 90%)"
-          ]
-        }}
-        transition={{
-          duration: 2.8,
-          repeat: Infinity,
-          repeatType: "reverse"
-        }}
-        style={{ zIndex: 1 }}
-      />
-      <motion.div
-        className="relative w-full h-44 md:h-52 flex-shrink-0 mb-6 mx-auto overflow-hidden rounded-2xl z-10 shadow-lg"
-        whileHover={{
-          scale: 1.09,
-          transition: { duration: 0.22, ease: [0.43, 0.18, 0.24, 0.98] }
-        }}
-        whileTap={{
-          scale: 0.98
-        }}
-        transition={{ type: 'spring', stiffness: 120, damping: 14 }}
-      >
-       <Image
-  src={creature.img}
-  alt={creature.name}
-  fill
-  priority={creature.name === 'Anglerfish' || creature.name === 'Giant Squid'}
-  className="object-cover"
-  sizes="(max-width: 700px) 100vw, 340px"
-/>
-
-      </motion.div>
-      <div className="flex-1 z-10 text-left">
-        <h2 className="text-3xl md:text-4xl font-black mb-2 capitalize tracking-wide drop-shadow-xl
-          bg-gradient-to-r from-cyan-200 via-sky-300 to-fuchsia-200 text-transparent bg-clip-text
-        ">
-          {creature.name}
-        </h2>
-        <p className="text-lg md:text-xl leading-relaxed font-medium px-2 py-2 rounded
-          text-cyan-100 drop-shadow
-          bg-gradient-to-r from-cyan-900/20 via-cyan-100/10 to-blue-400/10">
-          {creature.desc}
-        </p>
-      </div>
-    </motion.div>
-  );
-}
+import { motion } from 'framer-motion';
+import Layout from '@/components/Layout';
 
 const creatures = [
   {
-    name: "Anglerfish",
-    desc: "Anglerfish are elusive predators of the deep sea, instantly recognized by their luminescent lure dangling from the forehead. This adaptation attracts prey in pitch darkness. Females are much larger than males, who often fuse to them in a bizarre parasitic partnership. They thrive in immense pressure and utter dark, showcasing nature's most extreme forms.",
-    img: "/fishimages/angulerfish.png"
+    id: 1,
+    name: 'Anglerfish',
+    scientificName: 'Lophiiformes',
+    depth: '200-2000m',
+    description: 'Known for their bioluminescent lure, these deep-sea predators use light to attract prey in the darkness.',
+    image: '/fishimages/anglerfish.jpg',
+    facts: [
+      'Can unhinge their jaws to swallow prey twice their size',
+      'Some species have males that permanently fuse to females',
+      'Their light is produced by symbiotic bacteria'
+    ]
   },
   {
-    name: "Giant Squid",
-    desc: "The Giant Squid is legendary, rarely seen alive, and can surpass 12 meters in length. It has the largest eyes in the animal kingdom—helping it spot faint light in the abyss. With long tentacles armed with suckers, it's a powerful, mysterious predator that has inspired centuries of sea monster tales.",
-    img: "/fishimages/giantsquid.png"
+    id: 2,
+    name: 'Giant Squid',
+    scientificName: 'Architeuthis dux',
+    depth: '300-1000m',
+    description: 'The largest invertebrate on Earth, these mysterious creatures have captured human imagination for centuries.',
+    image: '/fishimages/giant-squid.jpg',
+    facts: [
+      'Can grow up to 43 feet long',
+      'Has the largest eyes in the animal kingdom',
+      'Battles with sperm whales in the deep ocean'
+    ]
   },
   {
-    name: "Goblin Shark",
-    desc: "Goblin Sharks—often called \"living fossils\"—have a flat snout and extendable jaws filled with nail-like teeth. This odd shark thrives in deep waters, hunting prey with both speed and a unique jaw mechanism that thrusts forward with lightning quickness.",
-    img: "/fishimages/goblinshark.png"
+    id: 3,
+    name: 'Vampire Squid',
+    scientificName: 'Vampyrotuthis infernalis',
+    depth: '600-900m',
+    description: 'Despite its name, this creature feeds on marine snow and organic debris, not blood.',
+    image: '/fishimages/vampire-squid.jpg',
+    facts: [
+      'Can turn itself inside out when threatened',
+      'Lives in oxygen minimum zones',
+      'Has bioluminescent photophores'
+    ]
   },
   {
-    name: "Vampire Squid",
-    desc: "Despite its name, the Vampire Squid is a gentle, small cephalopod living in the ocean's oxygen-poor depths. Its cloak-like webbing and glowing blue-red eyes create a mystical appearance. Rather than hunting, it feeds on drifting marine detritus.",
-    img: "/fishimages/vampiresquid.png"
+    id: 4,
+    name: 'Blobfish',
+    scientificName: 'Psychrolutes marcidus',
+    depth: '600-1200m',
+    description: 'Famous for its gelatinous appearance when brought to surface, it looks normal at depth.',
+    image: '/fishimages/blobfish.jpg',
+    facts: [
+      'Its body is mostly gelatinous mass',
+      'Lacks muscles and swims by opening its mouth',
+      'Voted "world\'s ugliest animal" in 2013'
+    ]
   },
   {
-    name: "Dumbo Octopus",
-    desc: "The Dumbo Octopus uses its ear-like fins to gracefully glide above the seafloor, often deeper than any other octopus. Its gentle, whimsical appearance belies a resilient creature perfectly adapted to the crushing pressure and cold of the abyss.",
-    img: "/fishimages/dumbooctopus.png"
+    id: 5,
+    name: 'Gulper Eel',
+    scientificName: 'Eurypharynx pelecanoides',
+    depth: '500-3000m',
+    description: 'Can unhinge its massive jaw to swallow prey much larger than itself.',
+    image: '/fishimages/gulper-eel.jpg',
+    facts: [
+      'Can open its mouth wide enough to swallow large fish',
+      'Has a bioluminescent organ at the tip of its tail',
+      'Can grow up to 6 feet long'
+    ]
   },
   {
-    name: "Fangtooth",
-    desc: "Fangtooth fish possess the largest teeth in proportion to body size among ocean fish. Their gaping mouths and armor-like scales make them look fearsome, yet these fish are small and often shy, flourishing in depths of over 5,000 meters.",
-    img: "/fishimages/fangtooth.png"
-  },
-  {
-    name: "Barreleye Fish",
-    desc: "The Barreleye is instantly recognizable by its transparent head, through which its tubular, rotating eyes peer up for prey. This rare deep dweller can see both above and ahead at the same time, a true marvel of adaptation.",
-    img: "/fishimages/barreleye.png"
-  },
-  {
-    name: "Dragonfish",
-    desc: "Dragonfish are tiny but terrifying, with fang-lined jaws and bioluminescent organs. They emit light to communicate, lure prey, and hide from predators—masters of camouflage in the abyss.",
-    img: "/fishimages/dragonfish.png"
-  },
-  {
-    name: "Frilled Shark",
-    desc: "Known as a 'living fossil,' the Frilled Shark has a serpentine body and hundreds of needle-sharp teeth. It rarely surfaces, slithering through the dark with primitive grace reminiscent of the distant past.",
-    img: "/fishimages/frilledshark.png"
-  },
-  {
-    name: "Deep Sea Hatchetfish",
-    desc: "These small, silver-bodied fish have slender, hatchet-shaped forms and bioluminescent belly lights. They blend with the faint light above, becoming nearly invisible to lurking predators below.",
-    img: "/fishimages/hatchetfish.png"
-  },
-  {
-    name: "Black Swallower",
-    desc: "The Black Swallower can engulf prey larger than itself thanks to its stretchable stomach. Found in the pitch-black depths, it's one of the ocean's most voracious and mysterious eaters.",
-    img: "/fishimages/blackswallower.png"
-  },
-  {
-    name: "Yeti Crab",
-    desc: "Yeti Crabs thrive near hydrothermal vents, sporting furry arms covered in bacteria that help detoxify their environment. Their unique appearance and symbiotic relationships make them a deep sea icon.",
-    img: "/fishimages/yeticrab.png"
-  },
-  {
-    name: "Blobfish",
-    desc: "Famous for its gelatinous, 'melted' face, the Blobfish lives under immense pressure deep below the surface. Out of water, it looks sad and strange, but it's perfectly equipped to glide along the seafloor.",
-    img: "/fishimages/blobfish.png"
-  },
-  {
-    name: "Cookiecutter Shark",
-    desc: "Named for its feeding method, the Cookiecutter Shark gouges circular plugs of flesh from larger animals with its uniquely shaped teeth. Its glowing belly lures big fish right into its ambush.",
-    img: "/fishimages/cookiecuttershark.png"
-  },
-  {
-    name: "Pelican Eel",
-    desc: "Pelican Eels have enormous, gaping mouths capable of swallowing prey nearly their own size. Their whip-like tails illuminate in the dark, advertising their presence to unsuspecting prey.",
-    img: "/fishimages/pelicaneel.png"
+    id: 6,
+    name: 'Dumbo Octopus',
+    scientificName: 'Grimpoteuthis',
+    depth: '3000-4000m',
+    description: 'The deepest-living octopus, named for its ear-like fins that resemble Disney\'s Dumbo.',
+    image: '/fishimages/dumbo-octopus.jpg',
+    facts: [
+      'Lives at the deepest depths of any octopus',
+      'Uses its ear-like fins to propel through water',
+      'Can change color and texture instantly'
+    ]
   }
 ];
 
-export default function Page() {
+export default function CreaturesPage() {
   return (
-    <main className="relative min-h-screen bg-gradient-to-b from-[#061221] via-blue-950 to-[#030917] text-white font-sans overflow-x-hidden">
-      <AnimatedBackground />
-      <div className="relative z-10 flex flex-col items-center w-full min-h-screen px-0">
-        <motion.h1
-          className="w-full text-center text-transparent bg-gradient-to-r from-cyan-200 via-blue-400 to-blue-900 bg-clip-text text-4xl md:text-6xl lg:text-7xl font-black tracking-tight py-8 md:py-16 mb-2 drop-shadow-2xl animate-gradient-x"
-          initial={{ opacity: 0, y: 70 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          <span className="inline-block animate-gradient-text">DEEP SEA CREATURES</span>
-        </motion.h1>
-        <div
-          className={`
-            w-full
-            flex
-            flex-row
-            flex-wrap
-            gap-8
-            px-4 md:px-8 pb-20 mt-4
-            justify-center
-            items-stretch
-            scroll-smooth
-            scrollbar-thin scrollbar-thumb-cyan-700 scrollbar-track-transparent
-          `}
-          style={{ WebkitOverflowScrolling: 'touch' }}
-        >
-          {creatures.map((c) => (
-            <FloatingWaterCard key={c.name} creature={c} />
+    <Layout showBubbles={false}>
+      <div className="min-h-screen pt-20 px-6">
+        {/* Header Section */}
+        <div className="text-center mb-16">
+          <motion.h1 
+            className="text-6xl md:text-8xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 mb-6"
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            Deep Sea Creatures
+          </motion.h1>
+          <motion.p 
+            className="text-xl text-cyan-300 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Discover the fascinating creatures that call the deep ocean home. From bioluminescent predators to gentle giants, 
+            explore the amazing adaptations that allow life to thrive in Earth's most extreme environments.
+          </motion.p>
+        </div>
+
+        {/* Creatures Grid */}
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+          {creatures.map((creature, index) => (
+            <motion.div
+              key={creature.id}
+              className="bg-gradient-to-br from-slate-900/50 to-blue-900/30 backdrop-blur-sm rounded-2xl overflow-hidden border border-cyan-500/20 hover:border-cyan-400/50 transition-all duration-300 group"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              whileHover={{ scale: 1.02, y: -10 }}
+            >
+              <div className="relative h-48 overflow-hidden">
+                <Image
+                  src={creature.image}
+                  alt={creature.name}
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  onError={(e) => {
+                    e.target.src = '/images/placeholder-fish.jpg';
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <h3 className="text-2xl font-bold text-white mb-1">{creature.name}</h3>
+                  <p className="text-cyan-300 text-sm italic">{creature.scientificName}</p>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-sm">
+                    Depth: {creature.depth}
+                  </span>
+                </div>
+                
+                <p className="text-gray-300 mb-4 leading-relaxed">
+                  {creature.description}
+                </p>
+                
+                <div className="space-y-2">
+                  <h4 className="text-cyan-400 font-semibold">Amazing Facts:</h4>
+                  <ul className="space-y-1">
+                    {creature.facts.map((fact, factIndex) => (
+                      <li key={factIndex} className="text-sm text-gray-400 flex items-start">
+                        <span className="text-cyan-500 mr-2">•</span>
+                        {fact}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </motion.div>
           ))}
         </div>
+
+        {/* Call to Action */}
+        <motion.div 
+          className="text-center py-16"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+        >
+          <h2 className="text-4xl font-bold text-white mb-4">Want to Learn More?</h2>
+          <p className="text-cyan-300 text-lg mb-8">
+            Explore our interactive dive experience or test your knowledge with our ocean quiz!
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <motion.button
+              className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:from-cyan-600 hover:to-blue-700 transition-all duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => window.location.href = '/dive'}
+            >
+              Experience Deep Dive
+            </motion.button>
+            <motion.button
+              className="bg-gradient-to-r from-purple-500 to-pink-600 text-white px-8 py-3 rounded-full font-semibold hover:from-purple-600 hover:to-pink-700 transition-all duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => window.location.href = '/quiz'}
+            >
+              Take Ocean Quiz
+            </motion.button>
+          </div>
+        </motion.div>
       </div>
-      <style jsx global>{`
-        .animate-gradient-x {
-          background-size: 300% 300%;
-          animation: gradxmove 8s ease-in-out infinite;
-        }
-        @keyframes gradxmove {
-          0% { background-position: 0% 55%; }
-          45% { background-position: 100% 50%; }
-          55% { background-position: 100% 50%; }
-          100% { background-position: 0% 55%; }
-        }
-        .animate-gradient-text {
-          background-clip: text;
-          -webkit-background-clip: text;
-          color: transparent;
-        }
-      `}</style>
-    </main>
+    </Layout>
   );
 }
