@@ -14,10 +14,10 @@ const Page = () => {
         muted
         playsInline
       >
-        <source src="/bg4.mp4" type="video/mp4" />
+        <source src="/bg2.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-<div className="absolute top-0 left-0 w-full h-full bg-black opacity-60 z-[-1]" />
+<div className="absolute top-0 left-0 w-full h-full bg-black opacity-20 z-[-1]" />
     
 
       {/* Navigation Links */}
@@ -43,18 +43,19 @@ const Page = () => {
       </div>
 
       {/* Title Section */}
-      <div className="z-20 text-center px-4 pb-12">
-        <h1 className="text-[3rem] mt-20 md:text-[6rem] lg:text-[12rem] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-100 via-white to-blue-300 leading-none">
-            EXPLORE
-        </h1>
-        
-        <h1 className="text-[3rem] md:text-[6rem] lg:text-[12rem] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-100 via-white to-blue-300 leading-none">
-          OCEAN
-        </h1>
-        <h2 className="text-lg md:text-4xl font-semibold italic text-cyan-300 drop-shadow-sm">
-          Vast and Alive
-        </h2>
-      </div>
+      <div className="z-20 text-center px-4 pb-12 mt-60">
+  <h1 className="text-[3rem] md:text-[6rem] lg:text-[5rem] font-bold leading-none text-transparent bg-clip-text bg-gradient-to-r from-white/80  to-slate-800 mix-blend-screen drop-shadow-lg">
+    EXPLORE
+  </h1>
+
+  <h1 className="text-[3rem] md:text-[6rem] lg:text-[8rem] font-extrabold leading-none text-transparent bg-clip-text bg-gradient-to-r from-slate-300 to-slate-700 mix-blend-screen drop-shadow-xl">
+    OCEAN
+  </h1>
+
+  <h2 className="text-lg md:text-4xl font-semibold italic text-cyan-200 mix-blend-soft-light drop-shadow-sm tracking-wide">
+    Vast and Alive
+  </h2>
+</div>
     </div>
   );
 };

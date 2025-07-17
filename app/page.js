@@ -48,11 +48,9 @@ export default function Home() {
         <h2 className="text-cyan-400 text-3xl italic mb-2 poppins-regular">Voyage into the Blue</h2>
         <div className="flex items-center space-x-2">
           <h1 className="text-[11rem] font-bold leading-none tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400">
-            O
+            OCEAN
           </h1>
-          <h1 className="text-[11rem] font-bold leading-none tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400">
-            CEAN
-          </h1>
+          
         </div>
         <p className="poppins-regular text-cyan-300 italic text-md max-w-[500px] mt-4">
           From bioluminescent wonders to sunken mysteries, deep ocean exploration unveils secrets of Earth's final frontier...
@@ -60,6 +58,7 @@ export default function Home() {
         <p className="text-cyan-400 italic text-xl mt-2">Exploring the Deep </p>
       </div>
       <Bubbles />
+     
       <FishScene />
       <AboutSection />
       <Timelines />
