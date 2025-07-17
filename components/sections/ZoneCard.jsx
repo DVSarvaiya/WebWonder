@@ -21,41 +21,40 @@ const SunlightZoneCard = ({
         e.currentTarget.style.boxShadow = styles.card.boxShadow;
       }}
     >
-      <h2 style={styles.title}>{title}</h2>
       <p style={styles.description}>{description}</p>
 
       <div style={styles.grid}>
         <div style={styles.box}>
-          <strong>🌡 Temperature</strong>
+          <strong>Temperature</strong>
           <p>{temperature}</p>
         </div>
         <div style={styles.box}>
-          <strong>👁 Light Level</strong>
+          <strong>Light Level</strong>
           <p>{lightLevel}</p>
         </div>
         <div style={styles.box}>
-          <strong>💧 Pressure</strong>
+          <strong>Pressure</strong>
           <p>{pressure}</p>
         </div>
         <div style={styles.box}>
-          <strong>📍 Depth Range</strong>
+          <strong>Depth Range</strong>
           <p>{depthRange}</p>
         </div>
       </div>
 
-      <h4 style={styles.subheading}>Typical Marine Life</h4>
+      {/* <h4 style={styles.subheading}>Typical Marine Life</h4>
       <div style={styles.creatureContainer}>
         {creatures.map((creature, index) => (
           <span key={index} style={styles.creatureTag}>{creature}</span>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };
 
 const styles = {
   card: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(0,0,0, 0.2)',
     backdropFilter: 'blur(10px)',
     WebkitBackdropFilter: 'blur(10px)',
     borderRadius: '16px',
@@ -84,12 +83,12 @@ const styles = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
+    gridTemplateColumns: '1fr 1fr 1fr 1fr',
     gap: '12px',
     marginTop: '20px',
   },
   box: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'rgba(0,0,0, 0.2)',
     borderRadius: '12px',
     padding: '12px',
     fontSize: '0.95rem',
