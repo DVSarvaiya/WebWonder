@@ -39,10 +39,6 @@ export default function Home() {
         {/* Optional: Add bubble animations or a canvas with particles */}
       </div>
 
-      {/* Border Frame */}
-      <div className="fixed top-5 bottom-5 left-5 right-5 border-2 border-cyan-500 z-10 rounded-4xl pointer-events-none"></div>
-
-
       {/* Navigation */}
       <NavBar />
 
@@ -63,7 +59,6 @@ export default function Home() {
         </p>
         <p className="text-cyan-400 italic text-xl mt-2">Exploring the Deep </p>
       </div>
-
       <Bubbles />
       <FishScene />
       <AboutSection />

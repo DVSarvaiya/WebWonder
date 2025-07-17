@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Fish, Waves, Eye, Zap, Anchor, MapPin } from 'lucide-react';
 import HeroSection from '@/components/sections/Section0';
 import AbyssopelagicZone from '@/components/sections/Section4';
 import BathypelagicZone from '@/components/sections/Section3';
@@ -12,6 +11,7 @@ import DepthMeter from '@/components/DepthMeter';
 import Navigation from '@/components/Navigation';
 import Footer from '@/components/Footer';
 import Lenis from 'lenis';
+import Bubbles from '@/components/Bubbles';
 
 
 export default function OceanJourney() {
@@ -64,7 +64,7 @@ export default function OceanJourney() {
     <div ref={containerRef} className="relative">
       <Navigation currentZone={currentZone} />
       <DepthMeter progress={scrollProgress} />
-
+      <Bubbles/>
       <HeroSection />
       <EpipelagicZone />
       <MesopelagicZone />

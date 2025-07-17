@@ -1,10 +1,10 @@
 'use client'
 import { useState } from 'react'
-import { Home, Heart, Search, Cpu, User } from 'lucide-react'
+import { Home, Heart, Search, Cpu, User,FishIcon } from 'lucide-react'
 
 const pages = [
   { name: 'Home', icon: <Home size={20} />, path: '#home' },
-  { name: 'Creatures', icon: <Heart size={20} />, path: '#creatures' },
+  { name: 'Creatures', icon: <FishIcon size={20} />, path: '#creatures' },
   { name: 'Explore', icon: <Search size={20} />, path: '#explore' },
   { name: 'Technologies', icon: <Cpu size={20} />, path: '#tech' },
   { name: 'About Us', icon: <User size={20} />, path: '#about' }
