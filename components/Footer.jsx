@@ -1,16 +1,17 @@
 import React from 'react';
+import Link from 'next/link';
 import { Github, Twitter, Instagram, Facebook } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-black py-12 px-6 border-t border-gray-800">
+    <footer className="bg-black/80 backdrop-blur-sm py-12 px-6 border-t border-cyan-500/20">
       <div className="max-w-6xl mx-auto">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           {/* Logo and description */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full flex items-center justify-center">
-                <span className="text-xl">🪼</span>
+                <span className="text-xl">🌊</span>
               </div>
               <h3 className="text-xl font-bold text-white">Ocean Depths</h3>
             </div>
@@ -35,38 +36,37 @@ const Footer = () => {
 
           {/* Navigation */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Navigation</h4>
+            <h4 className="text-white font-semibold mb-4">Explore</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">About</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Explore</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Research</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Conservation</a></li>
+              <li><Link href="/" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Home</Link></li>
+              <li><Link href="/creatures" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Sea Creatures</Link></li>
+              <li><Link href="/dive" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Virtual Dive</Link></li>
+              <li><Link href="/ab" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Ocean Zones</Link></li>
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Learn */}
           <div>
-            <h4 className="text-white font-semibold mb-4">Contact</h4>
+            <h4 className="text-white font-semibold mb-4">Learn</h4>
             <ul className="space-y-2">
-              <li><a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Contact Us</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Donate</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Volunteer</a></li>
-              <li><a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Careers</a></li>
+              <li><Link href="/technology" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Technology</Link></li>
+              <li><Link href="/quiz" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Ocean Quiz</Link></li>
+              <li><Link href="/demopage" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Demo</Link></li>
+              <li><a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Research</a></li>
             </ul>
           </div>
         </div>
 
-        {/* Quote */}
-        <div className="border-t border-gray-800 pt-8 text-center">
-          <blockquote className="text-gray-400 italic text-lg mb-4">
-            "The sea, once it casts its spell, holds one in its net of wonder forever."
-          </blockquote>
-          <cite className="text-cyan-400 font-semibold">— Jacques Cousteau</cite>
-        </div>
-
-        {/* Copyright */}
-        <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-500">
-          <p>&copy; 2024 Ocean Depths. All rights reserved.</p>
+        {/* Bottom section */}
+        <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+          <p className="text-gray-400 text-sm mb-4 md:mb-0">
+            © 2024 Ocean Depths. All rights reserved.
+          </p>
+          <div className="flex gap-6 text-sm">
+            <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Privacy Policy</a>
+            <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Terms of Service</a>
+            <a href="#" className="text-gray-400 hover:text-cyan-400 transition-colors duration-300">Contact</a>
+          </div>
         </div>
       </div>
     </footer>
