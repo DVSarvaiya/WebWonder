@@ -2,7 +2,6 @@
 
 /* =================== Bubble Container =================== */
 
-
 .bubble:nth-child(even) {
   animation-duration: 8s;
 }
@@ -74,19 +73,65 @@ html {
   font-style: normal;
 }
 
-/* ====== Bioluminescent Particle ====== */
-.bioluminescent-particle {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background-color: rgba(173, 216, 230, 0.8);
-  border-radius: 50%;
-  animation: flicker ease-in-out infinite;
+/* =================== Gradient Animation =================== */
+@keyframes gradient-x {
+  0%, 100% {
+    background-size: 200% 200%;
+    background-position: left center;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
 }
 
-@keyframes flicker {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 1; }
+.animate-gradient-x {
+  animation: gradient-x 4s ease infinite;
+  background-size: 200% 200%;
+}
+
+/* =================== Enhanced Bioluminescent Particles =================== */
+.bioluminescent-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, rgba(0,255,255,0.8) 0%, rgba(0,255,255,0.4) 50%, transparent 100%);
+  border-radius: 50%;
+  animation: enhanced-flicker ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(0,255,255,0.5), 0 0 20px rgba(0,255,255,0.3), 0 0 30px rgba(0,255,255,0.1);
+}
+
+@keyframes enhanced-flicker {
+  0%, 100% { 
+    opacity: 0.3; 
+    transform: scale(1);
+  }
+  25% { 
+    opacity: 0.8; 
+    transform: scale(1.2);
+  }
+  50% { 
+    opacity: 1; 
+    transform: scale(1.5);
+  }
+  75% { 
+    opacity: 0.6; 
+    transform: scale(1.1);
+  }
+}
+
+/* =================== Pulse Animation =================== */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 /* ====== Lanternfish ====== */
@@ -128,37 +173,80 @@ html {
   50% { transform: translateY(-15px); }
 }
 
-/* === Sonar Pulse Waves === */
+/* =================== Enhanced Sonar Pulse Waves =================== */
 .sonar-wave {
   position: absolute;
   width: 120px;
   height: 120px;
-  border: 2px solid cyan;
+  border: 2px solid rgba(0,255,255,0.6);
   border-radius: 50%;
-  opacity: 0.5;
-  animation: sonar-ping 2s ease-out forwards;
+  opacity: 0.7;
+  animation: enhanced-sonar-ping 3s ease-out infinite;
+  box-shadow: 0 0 20px rgba(0,255,255,0.3);
 }
 
 .wave-1 {
   animation-delay: 0s;
 }
 .wave-2 {
-  animation-delay: 0.5s;
-}
-.wave-3 {
   animation-delay: 1s;
 }
+.wave-3 {
+  animation-delay: 2s;
+}
 
-@keyframes sonar-ping {
+@keyframes enhanced-sonar-ping {
   0% {
-    transform: scale(0.2);
-    opacity: 0.7;
+    transform: scale(0.1);
+    opacity: 0.8;
+    border-color: rgba(0,255,255,0.8);
+  }
+  50% {
+    opacity: 0.4;
+    border-color: rgba(0,255,255,0.4);
   }
   100% {
-    transform: scale(2.5);
+    transform: scale(3);
     opacity: 0;
+    border-color: rgba(0,255,255,0);
   }
 }
+
+/* =================== Floating Animation =================== */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* =================== Glow Effect =================== */
+.glow-effect {
+  box-shadow: 0 0 20px rgba(0,255,255,0.3), 0 0 40px rgba(0,255,255,0.2), 0 0 60px rgba(0,255,255,0.1);
+}
+
+/* =================== Shimmer Effect =================== */
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
 @keyframes seaPigFloat {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-4px); }
