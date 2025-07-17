@@ -8,7 +8,11 @@ import MesopelagicZone from '@/components/sections/Section2';
 import EpipelagicZone from '@/components/sections/Section1';
 import HadopelagicZone from '@/components/sections/Section5';
 import DepthMeter from '@/components/DepthMeter';
-import Layout from '@/components/Layout';
+import Navigation from '@/components/Navigation';
+import Footer from '@/components/Footer';
+import Lenis from 'lenis';
+import Bubbles from '@/components/Bubbles';
+
 
 export default function OceanJourney() {
   const containerRef = useRef(null);
@@ -35,20 +39,39 @@ export default function OceanJourney() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  return (
-    <Layout showBubbles={false}>
-      <div ref={containerRef} className="relative">
-        {/* Depth Meter */}
-        <DepthMeter currentZone={currentZone} scrollProgress={scrollProgress} />
+  useEffect(() => {
+    const lenis = new Lenis({
+      autoRaf: true,
+    });
 
-        {/* Ocean Zones */}
-        <HeroSection />
-        <EpipelagicZone />
-        <MesopelagicZone />
-        <BathypelagicZone />
-        <AbyssopelagicZone />
-        <HadopelagicZone />
-      </div>
-    </Layout>
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    lenis.on('scroll', (e) => {
+      console.log(e);
+    });
+
+    return () => {
+      // Clean up on unmount
+      lenis.destroy();
+    };
+  }, []);
+  return (
+    <div ref={containerRef} className="relative">
+      <Navigation currentZone={currentZone} />
+      <DepthMeter progress={scrollProgress} />
+      <Bubbles/>
+      <HeroSection />
+      <EpipelagicZone />
+      <MesopelagicZone />
+      <BathypelagicZone />
+      <AbyssopelagicZone />
+      <HadopelagicZone />
+      <Footer />
+    </div>
   );
-}
+};
