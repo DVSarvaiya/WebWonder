@@ -64,8 +64,10 @@ export default function Home() {
         </div>
       </main>
 
+          
+
       {/* 🌊 Ocean Sections */}
-      <div className="w-full min-h-screen bg-gradient-to-b from-[#021d3f] via-[#053067] to-[#0a1528] flex items-center justify-center px-4 py-16 flex-col">
+      <div className="w-full min-h-screen bg-gradient-to-b from-[#000102] via-[#000205] to-[#000001] flex items-center justify-center px-4 py-16 flex-col">
         
         <div>
           <h1 className="text-white text-4xl font-bold mb-8">Our Oceans</h1>
