@@ -1,29 +1,8 @@
 @import "tailwindcss";
 
-/* =================== Typography =================== */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-
-.poppins-regular {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-}
-
-.poppins-medium {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-}
-
-.poppins-semibold {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-}
-
-.poppins-bold {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-}
-
 /* =================== Bubble Container =================== */
+
+
 .bubble:nth-child(even) {
   animation-duration: 8s;
 }
@@ -70,124 +49,120 @@
   animation: rovFloat 4s ease-in-out infinite;
 }
 
-/* =================== Gradient Animations =================== */
-@keyframes gradient-x {
+/* =================== Sea Pig Float =================== */
+@keyframes seaPigFloat {
   0%, 100% {
-    background-position: 0% 50%;
+    transform: translateY(0);
   }
   50% {
-    background-position: 100% 50%;
+    transform: translateY(-2px);
   }
 }
-
-.animate-gradient-x {
-  background-size: 200% 200%;
-  animation: gradient-x 3s ease infinite;
+.animate-sea-pig {
+  animation: seaPigFloat 3s ease-in-out infinite;
 }
 
-/* =================== Glow Effects =================== */
-.glow-cyan {
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+/* =================== Smooth Scroll =================== */
+html {
+  scroll-behavior: smooth;
 }
 
-.glow-blue {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+/* =================== Font =================== */
+.poppins-regular {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 
-/* =================== Scrollbar Styling =================== */
-::-webkit-scrollbar {
-  width: 8px;
+/* ====== Bioluminescent Particle ====== */
+.bioluminescent-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: rgba(173, 216, 230, 0.8);
+  border-radius: 50%;
+  animation: flicker ease-in-out infinite;
 }
 
-::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
+@keyframes flicker {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 1; }
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(34, 211, 238, 0.5);
-  border-radius: 4px;
+/* ====== Lanternfish ====== */
+.lanternfish-group {
+  top: 50%;
+  left: 10%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  z-index: 10;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(34, 211, 238, 0.7);
+.lanternfish {
+  position: relative;
+  width: 24px;
+  height: 12px;
+  background: #88c0d0;
+  border-radius: 50%;
+  animation: swim 6s ease-in-out infinite;
 }
 
-/* =================== Custom Animations =================== */
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+@keyframes swim {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(40px); }
+  100% { transform: translateX(0); }
+}
+
+/* ====== Jellyfish ====== */
+.jellyfish-1 {
+  top: 30%;
+  left: 70%;
+  z-index: 5;
+  animation: jellyfloat 5s ease-in-out infinite;
+}
+
+@keyframes jellyfloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+/* === Sonar Pulse Waves === */
+.sonar-wave {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  border: 2px solid cyan;
+  border-radius: 50%;
+  opacity: 0.5;
+  animation: sonar-ping 2s ease-out forwards;
+}
+
+.wave-1 {
+  animation-delay: 0s;
+}
+.wave-2 {
+  animation-delay: 0.5s;
+}
+.wave-3 {
+  animation-delay: 1s;
+}
+
+@keyframes sonar-ping {
+  0% {
+    transform: scale(0.2);
+    opacity: 0.7;
   }
-  50% {
-    box-shadow: 0 0 30px rgba(34, 211, 238, 0.6);
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
   }
 }
-
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
+@keyframes seaPigFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
 }
-
-/* =================== Backdrop Blur Fix =================== */
-.backdrop-blur-md {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* =================== Responsive Text =================== */
-@media (max-width: 768px) {
-  .text-responsive-xl {
-    font-size: 1.5rem;
-  }
-  
-  .text-responsive-2xl {
-    font-size: 2rem;
-  }
-  
-  .text-responsive-4xl {
-    font-size: 2.5rem;
-  }
-}
-
-@media (min-width: 769px) {
-  .text-responsive-xl {
-    font-size: 1.875rem;
-  }
-  
-  .text-responsive-2xl {
-    font-size: 2.5rem;
-  }
-  
-  .text-responsive-4xl {
-    font-size: 3.5rem;
-  }
-}
-
-/* =================== Loading Spinner =================== */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-spin {
-  animation: spin 1s linear infinite;
-}
-
-/* =================== Smooth Transitions =================== */
-* {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-
-/* =================== Focus Styles =================== */
-button:focus-visible,
-a:focus-visible {
-  outline: 2px solid rgba(34, 211, 238, 0.8);
-  outline-offset: 2px;
-}
-
-/* =================== Selection Styles =================== */
-::selection {
-  background-color: rgba(34, 211, 238, 0.3);
-  color: white;
+.animate-sea-pig {
+  animation: seaPigFloat 3s ease-in-out infinite;
 }
