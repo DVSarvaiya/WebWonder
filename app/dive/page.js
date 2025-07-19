@@ -1,225 +1,181 @@
 'use client';
-import React, { useRef, useEffect, useState } from 'react';
-import * as THREE from 'three';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Video360Viewer from '@/components/Video360Viewer'; // Import from separate file (adjust path as needed)
 
-export default function Home() {
-  const mountRef = useRef(null);
-  const videoRef = useRef(null);
-  const [isMuted, setIsMuted] = useState(true);
-  const cameraState = useRef({
-    phi: Math.PI / 2,
-    theta: 0,
-    velocityPhi: 0,
-    velocityTheta: 0,
-    keyState: { ArrowLeft: false, ArrowRight: false, ArrowUp: false, ArrowDown: false },
-  });
+
+// BubblesLayer Component (fixes hydration error by generating randoms client-side)
+function BubblesLayer() {
+  const [bubbles, setBubbles] = useState([]);
+
 
   useEffect(() => {
-    // Video setup
-    const video = document.createElement('video');
-    video.src = '/new360.mp4';
-    video.crossOrigin = 'anonymous';
-    video.loop = true;
-    video.muted = true;
-    video.autoplay = true;
-    video.playsInline = true;
-    video.setAttribute('webkit-playsinline', 'true');
-    video.load();
-
-    // Store video reference for mute/unmute functionality
-    videoRef.current = video;
-
-    const tryPlay = () => {
-      video.play().catch(() => {});
-      window.removeEventListener('click', tryPlay);
-    };
-    window.addEventListener('click', tryPlay);
-
-    // Three.js setup with optimized settings
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 5000);
-    camera.position.set(0, 0, 0);
-
-    const renderer = new THREE.WebGLRenderer({ 
-      antialias: true,
-      alpha: false,
-      precision: 'highp'
-    });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    mountRef.current.appendChild(renderer.domElement);
-
-    // Optimized sphere geometry
-    const geometry = new THREE.SphereGeometry(1000, 64, 32);
-    geometry.scale(-1, 1, 1);
-
-    // Video texture with better filtering
-    const texture = new THREE.VideoTexture(video);
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.format = THREE.RGBFormat;
-    texture.generateMipmaps = false;
-
-    const material = new THREE.MeshBasicMaterial({ 
-      map: texture,
-      side: THREE.FrontSide
-    });
-    const mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-
-    // Resize handler
-    function handleResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-    window.addEventListener('resize', handleResize);
-
-    // Smooth arrow key controls
-    function handleKeyDown(e) {
-      if (e.key in cameraState.current.keyState) {
-        cameraState.current.keyState[e.key] = true;
-      }
-    }
-    function handleKeyUp(e) {
-      if (e.key in cameraState.current.keyState) {
-        cameraState.current.keyState[e.key] = false;
-      }
-    }
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
-    // Animation loop with separate speeds for horizontal and vertical movement
-    function animate() {
-      requestAnimationFrame(animate);
-      const state = cameraState.current;
-      
-      // Separate speed controls
-      const horizontalSpeed = 0.009; // Left/Right speed (unchanged)
-      const verticalSpeed = 0.018;   // Up/Down speed (2x faster)
-      const damping = 0.84;
-
-      // Horizontal movement (Left/Right) - using original speed
-      if (state.keyState.ArrowLeft) state.velocityTheta -= horizontalSpeed;
-      if (state.keyState.ArrowRight) state.velocityTheta += horizontalSpeed;
-      
-      // Vertical movement (Up/Down) - using faster speed
-      if (state.keyState.ArrowUp) state.velocityPhi = Math.max(state.velocityPhi - verticalSpeed, -verticalSpeed * 2);
-      if (state.keyState.ArrowDown) state.velocityPhi = Math.min(state.velocityPhi + verticalSpeed, verticalSpeed * 2);
-
-      state.velocityTheta *= damping;
-      state.velocityPhi *= damping;
-      state.theta += state.velocityTheta;
-      state.phi += state.velocityPhi;
-      state.phi = Math.max(0.4, Math.min(Math.PI - 0.4, state.phi));
-
-      const x = Math.sin(state.phi) * Math.cos(state.theta);
-      const y = Math.cos(state.phi);
-      const z = Math.sin(state.phi) * Math.sin(state.theta);
-      
-      camera.lookAt(x, y, z);
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    video.addEventListener('canplay', () => {
-      video.play().catch(() => {});
-    });
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('click', tryPlay);
-      if (mountRef.current && renderer.domElement) {
-        mountRef.current.removeChild(renderer.domElement);
-      }
-      renderer.dispose();
-      geometry.dispose();
-      material.dispose();
-      texture.dispose();
-    };
+    const generated = Array.from({ length: 20 }).map(() => ({
+      size: Math.random() * 20 + 10,
+      left: Math.random() * 100,
+      delay: Math.random() * 5,
+      duration: Math.random() * 10 + 10,
+    }));
+    setBubbles(generated);
   }, []);
 
-  // Handle mute/unmute functionality
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-      setIsMuted(videoRef.current.muted);
-    }
-  };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-black">
-      <div ref={mountRef} className="absolute inset-0 z-0" />
-      
-      {/* Subtle vignette for immersion */}
-      <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-radial from-transparent via-transparent to-black/20" />
-      
-      {/* Main title */}
-      <div className="absolute inset-0 flex items-center justify-center z-20">
-        <h1 className="text-white text-3xl md:text-5xl font-bold text-center drop-shadow-2xl">
-          
-        </h1>
-      </div>
-
-      {/* Mute/Unmute Button */}
-      <div className="absolute top-6 right-6 z-30">
-        <button
-          onClick={toggleMute}
-          className="flex items-center justify-center w-12 h-12 bg-black/50 hover:bg-black/70 rounded-full backdrop-blur-sm transition-all duration-200 border border-white/20 hover:border-white/40"
-          aria-label={isMuted ? "Unmute video" : "Mute video"}
-        >
-          {isMuted ? (
-            // Muted icon (speaker with X)
-            <svg 
-              className="w-6 h-6 text-white" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" 
-              />
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" 
-              />
-            </svg>
-          ) : (
-            // Unmuted icon (speaker with sound waves)
-            <svg 
-              className="w-6 h-6 text-white" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" 
-              />
-            </svg>
-          )}
-        </button>
-      </div>
-
-      {/* Optional: Instructions for users */}
-      <div className="absolute bottom-12 left-6 z-30">
-        <div className="bg-black/50 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-          <p className="text-white text-sm">
-            Use arrow keys to navigate • Click unmute for audio
-          </p>
-        </div>
-      </div>
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      {bubbles.map((b, i) => (
+        <div
+          key={i}
+          className="absolute bg-blue-300/20 rounded-full animate-bubble"
+          style={{
+            width: `${b.size}px`,
+            height: `${b.size}px`,
+            left: `${b.left}%`,
+            animationDelay: `${b.delay}s`,
+            animationDuration: `${b.duration}s`,
+          }}
+        />
+      ))}
     </div>
   );
 }
 
+
+// Dive stops data
+const diveStops = [
+  {
+    id: 1,
+    title: 'Kelp Forest Wonderland',
+    description: 'Glide through emerald towers, where every leaf hides a new discovery.',
+    videoSrc: '/360video.mp4', // Ensure this is in /public folder
+    img: '/earth.png', // Add image to public folder
+  },
+  {
+    id: 2,
+    title: 'The Wreck Awakens',
+    description: 'Unravel the secrets of the deep as your lights reveal an ancient ship.',
+    videoSrc: 'https://example.com/360-wreck.mp4', // Replace with actual URL
+    img: '/wreck-bg.jpg', // Add image to public folder
+  },
+  {
+    id: 3,
+    title: 'Dolphin Playground',
+    description: 'Join the dance of dolphins in crystal-clear waters, a symphony of marine joy.',
+    videoSrc: '/360video.mp4', // Replace with actual URL
+    img: '/dolphins-bg.jpg', // Add image to public folder
+  },
+  {
+    id: 4,
+    title: 'Coral Reef Metropolis',
+    description: 'Dive into bustling underwater cities alive with color and hidden wonders.',
+    videoSrc: 'https://example.com/360-coral-reef.mp4', // Replace with actual URL
+    img: '/coral-bg.jpg', // Add image to public folder
+  },
+  // Add more dive stops as needed
+];
+
+
+// Main DivingPage Component
+export default function DivingPage() {
+  const [selectedDive, setSelectedDive] = useState(null);
+  const viewerRef = useRef(null); // Ref to access Video360Viewer methods
+  const isClosing = useRef(false); // NEW: Prevent race conditions during close
+
+  // Handle close with immediate pause
+  const handleClose = () => {
+    if (isClosing.current) return; // Prevent multiple calls
+    isClosing.current = true;
+    if (viewerRef.current) {
+      viewerRef.current.pauseVideo(); // Pause immediately
+    }
+    setSelectedDive(null);
+    // Reset flag after animation (match exit duration)
+    setTimeout(() => { isClosing.current = false; }, 300);
+  };
+
+  return (
+    <div className="relative min-h-screen overflow-x-hidden bg-gradient-to-b from-[#091e3a] to-[#1e3765]">
+      <BubblesLayer />
+      <section className="relative z-10 max-w-5xl mx-auto pt-14 pb-32">
+        <header className="mb-16 text-center">
+          <motion.h1
+            layout
+            className="text-5xl md:text-6xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-blue-700 drop-shadow-lg"
+          >
+            Dive Into OceanXplore
+          </motion.h1>
+          <motion.p
+            layout
+            className="text-lg md:text-2xl text-blue-200/80 mt-4 mx-auto max-w-2xl"
+          >
+            Explore real underwater worlds in interactive, cinematic 360° video.<br />
+            Navigate ocean mysteries, learn marine science, get inspired!
+          </motion.p>
+        </header>
+        {/* Timeline */}
+        <div className="flex flex-col gap-16 relative">
+          <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-400/30 to-blue-700/10 rounded-full -translate-x-1/2 z-0" />
+          {diveStops.map((stop, idx) => (
+            <motion.article
+              key={stop.id}
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.6 }}
+              transition={{ duration: 0.6, delay: idx * 0.15 }}
+              className={`relative z-10 max-w-2xl mx-auto rounded-3xl shadow-2xl bg-white/5 backdrop-blur-lg border border-[#60aaff33] overflow-hidden ring-2 ring-blue-700/10 ${idx % 2 === 0 ? 'ml-0 mr-auto' : 'ml-auto mr-0'}`}
+              style={{
+                boxShadow: '0 12px 38px 0 #2261c340',
+              }}
+            >
+              <div className="absolute right-4 bottom-4 z-0 opacity-10">
+                <img src={stop.img} alt="" className="w-36 h-24 object-cover rounded-xl" />
+              </div>
+              <div className="relative z-10 p-10">
+                <h2 className="text-2xl md:text-3xl font-bold text-blue-50 drop-shadow">{stop.title}</h2>
+                <p className="mt-3 text-blue-100/80 text-lg">{stop.description}</p>
+                <button
+                  className="mt-8 px-6 py-3 font-semibold text-lg bg-gradient-to-tr from-sky-500 to-blue-700 rounded-full shadow-md text-white hover:scale-105 transition"
+                  onClick={() => setSelectedDive(stop)}
+                >
+                  Explore in 360°
+                </button>
+              </div>
+            </motion.article>
+          ))}
+        </div>
+      </section>
+
+
+      {/* 360° Video Modal */}
+      <AnimatePresence>
+        {selectedDive && (
+          <motion.div
+            key="modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }} // NEW: Short duration to smooth any perceived flash
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-lg"
+          >
+            <button
+              onClick={handleClose}
+              className="absolute top-6 right-8 text-5xl text-white/70 hover:text-white"
+            >
+              &times;
+            </button>
+            <div className="w-full max-w-6xl h-[80vh] bg-black rounded-2xl overflow-hidden shadow-2xl relative">
+              <Video360Viewer 
+                ref={viewerRef}
+                videoSrc={selectedDive.videoSrc} 
+                title={selectedDive.title}
+                width="100%"
+                height="100%"
+                initialMuted={true}
+                showInstructions={true}
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
