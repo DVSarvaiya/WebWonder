@@ -34,11 +34,30 @@ const Video360Viewer = forwardRef(function Video360Viewer(props, ref) {
   useImperativeHandle(ref, () => ({
     pauseVideo: () => {
       if (videoRef.current) {
+        // Immediately stop audio by muting first
+        videoRef.current.muted = true;
         videoRef.current.pause();
         videoRef.current.currentTime = 0;
+        // Reset to initial muted state after a brief delay
+        setTimeout(() => {
+          if (videoRef.current) {
+            videoRef.current.muted = initialMuted;
+          }
+        }, 100);
         setIsPlaying(false); // Sync state
+        setCurrentTime(0); // Reset slider
       }
     },
+    // Add a method to completely stop and cleanup video
+    stopAndCleanup: () => {
+      if (videoRef.current) {
+        videoRef.current.muted = true;
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+        videoRef.current.src = '';
+        videoRef.current.load();
+      }
+    }
   }));
 
   useEffect(() => {
@@ -172,157 +191,152 @@ const Video360Viewer = forwardRef(function Video360Viewer(props, ref) {
     video.addEventListener('loadedmetadata', () => {
       if (!animationFrameId) animate();
     });
-
-    // --- Video playback logic (autoplay on user click) ---
-    let hasUserInteracted = false;
-    const tryPlay = () => {
-      if (!hasUserInteracted) {
-        hasUserInteracted = true;
-        video.play().catch(() => {});
-      }
-      window.removeEventListener('click', tryPlay);
-    };
-    window.addEventListener('click', tryPlay);
-
-    video.addEventListener('canplaythrough', () => {
-      if (hasUserInteracted) {
-        video.play().catch(() => {});
-      }
-    });
-
-    // --- Cleanup (Strengthened: Fully stop and remove video) ---
-    return () => {
-      if (videoRef.current) {
-        videoRef.current.pause();
-        videoRef.current.currentTime = 0;
-        videoRef.current.src = ''; // Remove source to stop any buffering/playback
-        videoRef.current.load(); // Force reload to clear state
-        videoRef.current.remove(); // Remove from DOM
-        videoRef.current.removeEventListener('timeupdate', handleTimeUpdate);
-        videoRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
-        videoRef.current.removeEventListener('play', handlePlay);
-        videoRef.current.removeEventListener('pause', handlePause);
-      }
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('click', tryPlay);
-      resizeObserver.disconnect();
-      cancelAnimationFrame(animationFrameId);
-      if (mountRef.current && renderer.domElement) mountRef.current.removeChild(renderer.domElement);
-      renderer.dispose();
-      if (geometry) geometry.dispose();
-      if (material) material.dispose();
-      if (texture) texture.dispose();
-      if (mesh) scene.remove(mesh);
-    };
-    // eslint-disable-next-line
-  }, [videoSrc, initialMuted]);
-
-  // Mute/unmute handling
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-      setIsMuted(videoRef.current.muted);
-    }
-  };
-
-  // Play/pause toggle handler
-  const togglePlayPause = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play().catch(() => {}); // Handle potential autoplay issues
-      }
-      setIsPlaying(!isPlaying); // Optimistically update state (synced via events)
-    }
-  };
-
-  // Slider change handler
-  const handleSliderChange = (e) => {
-    const newTime = parseFloat(e.target.value);
-    setCurrentTime(newTime);
-    if (videoRef.current) {
-      videoRef.current.currentTime = newTime;
-    }
-  };
-
-  return (
-    <div className="relative w-full h-full" ref={mountRef} style={{ width, height }}>
-      {/* Overlay elements (title, controls) */}
-      {/* <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-radial from-transparent via-transparent to-black/20" />
-      <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-        <h1 className="text-white text-3xl md:text-5xl font-bold text-center drop-shadow-2xl">
-          {title}
-        </h1>
-      </div> */}
-      {showInstructions && (
-        <div className="absolute top-6 right-6 z-30 pointer-events-none">
-          <div className="bg-black/50 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-            <p className="text-white text-sm">
-              Use arrow keys to navigate
-            </p>
+        // --- Video playback logic (autoplay on user click) ---
+        let hasUserInteracted = false;
+        const tryPlay = () => {
+          if (!hasUserInteracted) {
+            hasUserInteracted = true;
+            video.play().catch(() => {});
+          }
+          window.removeEventListener('click', tryPlay);
+        };
+        window.addEventListener('click', tryPlay);
+    
+        video.addEventListener('canplaythrough', () => {
+          if (hasUserInteracted) {
+            video.play().catch(() => {});
+          }
+        });
+    
+        // --- Cleanup (Strengthened: Fully stop and remove video) ---
+        return () => {
+          if (videoRef.current) {
+            videoRef.current.muted = true; // Mute immediately before cleanup
+            videoRef.current.pause();
+            videoRef.current.currentTime = 0;
+            videoRef.current.src = ''; // Remove source to stop any buffering/playback
+            videoRef.current.load(); // Force reload to clear state
+            videoRef.current.removeEventListener('timeupdate', handleTimeUpdate);
+            videoRef.current.removeEventListener('loadedmetadata', handleLoadedMetadata);
+            videoRef.current.removeEventListener('play', handlePlay);
+            videoRef.current.removeEventListener('pause', handlePause);
+            videoRef.current.removeEventListener('loadeddata', onLoadedData);
+          }
+          window.removeEventListener('keydown', handleKeyDown);
+          window.removeEventListener('keyup', handleKeyUp);
+          window.removeEventListener('click', tryPlay);
+          resizeObserver.disconnect();
+          cancelAnimationFrame(animationFrameId);
+          if (mountRef.current && renderer.domElement) mountRef.current.removeChild(renderer.domElement);
+          renderer.dispose();
+          if (geometry) geometry.dispose();
+          if (material) material.dispose();
+          if (texture) texture.dispose();
+          if (mesh) scene.remove(mesh);
+        };
+        // eslint-disable-next-line
+      }, [videoSrc, initialMuted]);
+    
+      // Mute/unmute handling
+      const toggleMute = () => {
+        if (videoRef.current) {
+          videoRef.current.muted = !videoRef.current.muted;
+          setIsMuted(videoRef.current.muted);
+        }
+      };
+    
+      // Play/pause toggle handler
+      const togglePlayPause = () => {
+        if (videoRef.current) {
+          if (isPlaying) {
+            videoRef.current.pause();
+          } else {
+            videoRef.current.play().catch(() => {}); // Handle potential autoplay issues
+          }
+          setIsPlaying(!isPlaying); // Optimistically update state (synced via events)
+        }
+      };
+    
+      // Slider change handler
+      const handleSliderChange = (e) => {
+        const newTime = parseFloat(e.target.value);
+        setCurrentTime(newTime);
+        if (videoRef.current) {
+          videoRef.current.currentTime = newTime;
+        }
+      };
+    
+      return (
+        <div className="relative w-full h-full" ref={mountRef} style={{ width, height }}>
+          {/* Overlay elements (title, controls) */}
+          {showInstructions && (
+            <div className="absolute top-6 right-6 z-30 pointer-events-none">
+              <div className="bg-black/50 backdrop-blur-sm rounded-lg p-3 border border-white/20">
+                <p className="text-white text-sm">
+                  Use arrow keys to navigate
+                </p>
+              </div>
+            </div>
+          )}
+          {/* Bottom controls container (Updated: Holds buttons and slider) */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-3/4 z-30 flex items-center space-x-3">
+            {/* Play/Pause Button */}
+            <button
+              onClick={togglePlayPause}
+              className="flex items-center justify-center w-12 h-12 bg-black/50 hover:bg-black/70 rounded-full backdrop-blur-sm transition-all duration-200 border border-white/20 hover:border-white/40"
+              aria-label={isPlaying ? "Pause video" : "Play video"}
+              tabIndex={0}
+            >
+              {isPlaying ? (
+                // Pause icon
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              ) : (
+                // Play icon
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              )}
+            </button>
+            {/* Mute Button */}
+            <button
+              onClick={toggleMute}
+              className="flex items-center justify-center w-12 h-12 bg-black/50 hover:bg-black/70 rounded-full backdrop-blur-sm transition-all duration-200 border border-white/20 hover:border-white/40"
+              aria-label={isMuted ? "Unmute video" : "Mute video"}
+              tabIndex={0}
+            >
+              {isMuted ? (
+                // Muted (crossed) icon
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                </svg>
+              ) : (
+                // Unmuted (wave) icon
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+              )}
+            </button>
+            {/* Slider (Flexes to fill remaining space) */}
+            <input
+              type="range"
+              min={0}
+              max={duration || 0}
+              step={0.1}
+              value={currentTime}
+              onChange={handleSliderChange}
+              className="flex-grow h-2 bg-white/30 rounded-lg appearance-none cursor-pointer"
+              style={{
+                background: `linear-gradient(to right, white ${(currentTime / duration) * 100}%, transparent ${(currentTime / duration) * 100}%)`,
+              }}
+              aria-label="Video seek slider"
+            />
           </div>
         </div>
-      )}
-      {/* Bottom controls container (Updated: Holds buttons and slider) */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-3/4 z-30 flex items-center space-x-3">
-        {/* Play/Pause Button */}
-        <button
-          onClick={togglePlayPause}
-          className="flex items-center justify-center w-12 h-12 bg-black/50 hover:bg-black/70 rounded-full backdrop-blur-sm transition-all duration-200 border border-white/20 hover:border-white/40"
-          aria-label={isPlaying ? "Pause video" : "Play video"}
-          tabIndex={0}
-        >
-          {isPlaying ? (
-            // Pause icon
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          ) : (
-            // Play icon
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          )}
-        </button>
-        {/* Mute Button */}
-        <button
-          onClick={toggleMute}
-          className="flex items-center justify-center w-12 h-12 bg-black/50 hover:bg-black/70 rounded-full backdrop-blur-sm transition-all duration-200 border border-white/20 hover:border-white/40"
-          aria-label={isMuted ? "Unmute video" : "Mute video"}
-          tabIndex={0}
-        >
-          {isMuted ? (
-            // Muted (crossed) icon
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
-            </svg>
-          ) : (
-            // Unmuted (wave) icon
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-            </svg>
-          )}
-        </button>
-        {/* Slider (Flexes to fill remaining space) */}
-        <input
-          type="range"
-          min={0}
-          max={duration || 0}
-          step={0.1}
-          value={currentTime}
-          onChange={handleSliderChange}
-          className="flex-grow h-2 bg-white/30 rounded-lg appearance-none cursor-pointer"
-          style={{
-            background: `linear-gradient(to right, white ${ (currentTime / duration) * 100 }%, transparent ${ (currentTime / duration) * 100 }%)`,
-          }}
-          aria-label="Video seek slider"
-        />
-      </div>
-    </div>
-  );
-});
-
-export default Video360Viewer;
+      );
+    });
+    
+    export default Video360Viewer;

@@ -50,6 +50,7 @@ const diveStops = [
 export default function DivingPage() {
   const [selectedDive, setSelectedDive] = useState(null);
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [isClosing, setIsClosing] = useState(false);
   const viewerRef = useRef(null);
   const { scrollY } = useScroll();
   
@@ -58,8 +59,19 @@ export default function DivingPage() {
   const scaleProgress = useTransform(scrollY, [0, 100], [1, 1.05]);
 
   const handleClose = () => {
-    viewerRef.current?.pauseVideo();
-    setSelectedDive(null);
+    // Immediately pause the video before starting close animation
+    if (viewerRef.current) {
+      viewerRef.current.pauseVideo();
+    }
+    
+    // Set closing state to trigger exit animation
+    setIsClosing(true);
+    
+    // Wait for exit animation to complete before clearing state
+    setTimeout(() => {
+      setSelectedDive(null);
+      setIsClosing(false);
+    }, 300); // Match this with your exit animation duration
   };
 
   return (
@@ -224,48 +236,49 @@ export default function DivingPage() {
                           onClick={() => setSelectedDive(stop)}
                           className="relative group/btn overflow-hidden px-8 py-4 rounded-full"
                           style={{ background: stop.accent }}
-                          >
-                            <span className="relative z-10 flex items-center gap-3 font-semibold text-white">
-                              Dive In
-                              <svg className="w-5 h-5 group-hover/btn:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                              </svg>
-                            </span>
-                            <motion.div
-                              className="absolute inset-0 bg-white/20"
-                              initial={{ x: '-100%' }}
-                              whileHover={{ x: 0 }}
-                              transition={{ duration: 0.3 }}
-                            />
-                          </motion.button>
-                        </div>
-  
-                        {/* Side accent */}
-                        <motion.div
-                          className={`absolute top-1/2 ${idx % 2 === 0 ? 'right-0' : 'left-0'} w-1 bg-gradient-to-b ${stop.gradient}`}
-                          initial={{ height: 0 }}
-                          whileInView={{ height: '50%' }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.8, delay: 0.3 }}
-                          style={{ transform: 'translateY(-50%)' }}
-                        />
+                        >
+                          <span className="relative z-10 flex items-center gap-3 font-semibold text-white">
+                            Dive In
+                            <svg className="w-5 h-5 group-hover/btn:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                          </span>
+                          <motion.div
+                            className="absolute inset-0 bg-white/20"
+                            initial={{ x: '-100%' }}
+                            whileHover={{ x: 0 }}
+                            transition={{ duration: 0.3 }}
+                          />
+                        </motion.button>
                       </div>
-                    </motion.div>
-                  </motion.article>
-                ))}
-              </div>
+
+                      {/* Side accent */}
+                      <motion.div
+                        className={`absolute top-1/2 ${idx % 2 === 0 ? 'right-0' : 'left-0'} w-1 bg-gradient-to-b ${stop.gradient}`}
+                        initial={{ height: 0 }}
+                        whileInView={{ height: '50%' }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.3 }}
+                        style={{ transform: 'translateY(-50%)' }}
+                      />
+                    </div>
+                  </motion.div>
+                </motion.article>
+              ))}
             </div>
-          </section>
-        </div>
-  
-        {/* 360° Video Modal */}
-        <AnimatePresence>
-          {selectedDive && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          </div>
+        </section>
+      </div>
+
+      {/* 360° Video Modal */}
+      <AnimatePresence>
+        {selectedDive && !isClosing && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
             >
               {/* Backdrop */}
               <motion.div
@@ -289,7 +302,7 @@ export default function DivingPage() {
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={handleClose}
-                  className="absolute -top-12 right-0 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-colors"
+                  className="absolute -top-12 right-0 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-colors z-50"
                 >
                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -356,6 +369,47 @@ export default function DivingPage() {
   
           ::-webkit-scrollbar-thumb {
             background: linear-gradient(to bottom, #06b6d4, #8b5cf6);
+            border-radius: 4px;
+          }
+  
+          /* Slider styling */
+          input[type="range"] {
+            -webkit-appearance: none;
+          }
+  
+          input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: white;
+            cursor: pointer;
+            border-radius: 50%;
+            margin-top: -4px;
+          }
+  
+          input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: white;
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+          }
+  
+          input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: transparent;
+            border-radius: 4px;
+          }
+  
+          input[type="range"]::-moz-range-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: transparent;
             border-radius: 4px;
           }
         `}</style>
