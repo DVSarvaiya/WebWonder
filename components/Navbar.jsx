@@ -22,7 +22,7 @@ export default function NavBar() {
   const [activeIndex, setActiveIndex] = useState(0)
 
   return (
-    <nav className="fixed top-7.5 right-7.5 z-50">
+    <nav className="fixed top-7.5 left-1/3 z-50">
       <div className="flex space-x-4 bg-black/10 px-5 py-3 rounded-full backdrop-blur-md shadow-2xl border border-cyan-500">
         {pages.map((page, index) => (
           <button
