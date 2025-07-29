@@ -1,225 +1,418 @@
 'use client';
-import React, { useRef, useEffect, useState } from 'react';
-import * as THREE from 'three';
+import React, { useState, useRef } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import Video360Viewer from '@/components/Video360Viewer';
 
-export default function Home() {
-  const mountRef = useRef(null);
-  const videoRef = useRef(null);
-  const [isMuted, setIsMuted] = useState(true);
-  const cameraState = useRef({
-    phi: Math.PI / 2,
-    theta: 0,
-    velocityPhi: 0,
-    velocityTheta: 0,
-    keyState: { ArrowLeft: false, ArrowRight: false, ArrowUp: false, ArrowDown: false },
-  });
+// Dive stops data
+const diveStops = [
+  {
+    id: 1,
+    title: 'Kelp Forest Wonderland',
+    description: 'Glide through emerald towers, where every leaf hides a new discovery.',
+    videoSrc: '/360video.mp4',
+    img: '/earth.png',
+    duration: '25 min',
+    gradient: 'from-emerald-400 via-teal-500 to-cyan-600',
+    accent: '#10b981',
+  },
+  {
+    id: 2,
+    title: 'The Wreck Awakens',
+    description: 'Unravel the secrets of the deep as your lights reveal an ancient ship.',
+    videoSrc: 'https://example.com/360-wreck.mp4',
+    img: '/wreck-bg.jpg',
+    duration: '35 min',
+    gradient: 'from-violet-400 via-purple-500 to-indigo-600',
+    accent: '#8b5cf6',
+  },
+  {
+    id: 3,
+    title: 'Dolphin Playground',
+    description: 'Join the dance of dolphins in crystal-clear waters, a symphony of marine joy.',
+    videoSrc: '/360video.mp4',
+    img: '/dolphins-bg.jpg',
+    duration: '30 min',
+    gradient: 'from-sky-400 via-blue-500 to-blue-600',
+    accent: '#3b82f6',
+  },
+  {
+    id: 4,
+    title: 'Coral Reef Metropolis',
+    description: 'Dive into bustling underwater cities alive with color and hidden wonders.',
+    videoSrc: 'https://example.com/360-coral-reef.mp4',
+    img: '/coral-bg.jpg',
+    duration: '40 min',
+    gradient: 'from-rose-400 via-pink-500 to-purple-600',
+    accent: '#ec4899',
+  },
+];
 
-  useEffect(() => {
-    // Video setup
-    const video = document.createElement('video');
-    video.src = '/new360.mp4';
-    video.crossOrigin = 'anonymous';
-    video.loop = true;
-    video.muted = true;
-    video.autoplay = true;
-    video.playsInline = true;
-    video.setAttribute('webkit-playsinline', 'true');
-    video.load();
+export default function DivingPage() {
+  const [selectedDive, setSelectedDive] = useState(null);
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const [isClosing, setIsClosing] = useState(false);
+  const viewerRef = useRef(null);
+  const { scrollY } = useScroll();
+  
+  // Parallax transforms
+  const bgY = useTransform(scrollY, [0, 1000], ['0%', '50%']);
+  const scaleProgress = useTransform(scrollY, [0, 100], [1, 1.05]);
 
-    // Store video reference for mute/unmute functionality
-    videoRef.current = video;
-
-    const tryPlay = () => {
-      video.play().catch(() => {});
-      window.removeEventListener('click', tryPlay);
-    };
-    window.addEventListener('click', tryPlay);
-
-    // Three.js setup with optimized settings
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 5000);
-    camera.position.set(0, 0, 0);
-
-    const renderer = new THREE.WebGLRenderer({ 
-      antialias: true,
-      alpha: false,
-      precision: 'highp'
-    });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    mountRef.current.appendChild(renderer.domElement);
-
-    // Optimized sphere geometry
-    const geometry = new THREE.SphereGeometry(1000, 64, 32);
-    geometry.scale(-1, 1, 1);
-
-    // Video texture with better filtering
-    const texture = new THREE.VideoTexture(video);
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.format = THREE.RGBFormat;
-    texture.generateMipmaps = false;
-
-    const material = new THREE.MeshBasicMaterial({ 
-      map: texture,
-      side: THREE.FrontSide
-    });
-    const mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh);
-
-    // Resize handler
-    function handleResize() {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+  const handleClose = () => {
+    // Immediately pause the video before starting close animation
+    if (viewerRef.current) {
+      viewerRef.current.pauseVideo();
     }
-    window.addEventListener('resize', handleResize);
-
-    // Smooth arrow key controls
-    function handleKeyDown(e) {
-      if (e.key in cameraState.current.keyState) {
-        cameraState.current.keyState[e.key] = true;
-      }
-    }
-    function handleKeyUp(e) {
-      if (e.key in cameraState.current.keyState) {
-        cameraState.current.keyState[e.key] = false;
-      }
-    }
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
-    // Animation loop with separate speeds for horizontal and vertical movement
-    function animate() {
-      requestAnimationFrame(animate);
-      const state = cameraState.current;
-      
-      // Separate speed controls
-      const horizontalSpeed = 0.009; // Left/Right speed (unchanged)
-      const verticalSpeed = 0.018;   // Up/Down speed (2x faster)
-      const damping = 0.84;
-
-      // Horizontal movement (Left/Right) - using original speed
-      if (state.keyState.ArrowLeft) state.velocityTheta -= horizontalSpeed;
-      if (state.keyState.ArrowRight) state.velocityTheta += horizontalSpeed;
-      
-      // Vertical movement (Up/Down) - using faster speed
-      if (state.keyState.ArrowUp) state.velocityPhi = Math.max(state.velocityPhi - verticalSpeed, -verticalSpeed * 2);
-      if (state.keyState.ArrowDown) state.velocityPhi = Math.min(state.velocityPhi + verticalSpeed, verticalSpeed * 2);
-
-      state.velocityTheta *= damping;
-      state.velocityPhi *= damping;
-      state.theta += state.velocityTheta;
-      state.phi += state.velocityPhi;
-      state.phi = Math.max(0.4, Math.min(Math.PI - 0.4, state.phi));
-
-      const x = Math.sin(state.phi) * Math.cos(state.theta);
-      const y = Math.cos(state.phi);
-      const z = Math.sin(state.phi) * Math.sin(state.theta);
-      
-      camera.lookAt(x, y, z);
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    video.addEventListener('canplay', () => {
-      video.play().catch(() => {});
-    });
-
-    // Cleanup
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('click', tryPlay);
-      if (mountRef.current && renderer.domElement) {
-        mountRef.current.removeChild(renderer.domElement);
-      }
-      renderer.dispose();
-      geometry.dispose();
-      material.dispose();
-      texture.dispose();
-    };
-  }, []);
-
-  // Handle mute/unmute functionality
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-      setIsMuted(videoRef.current.muted);
-    }
+    
+    // Set closing state to trigger exit animation
+    setIsClosing(true);
+    
+    // Wait for exit animation to complete before clearing state
+    setTimeout(() => {
+      setSelectedDive(null);
+      setIsClosing(false);
+    }, 300); // Match this with your exit animation duration
   };
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-black">
-      <div ref={mountRef} className="absolute inset-0 z-0" />
-      
-      {/* Subtle vignette for immersion */}
-      <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-radial from-transparent via-transparent to-black/20" />
-      
-      {/* Main title */}
-      <div className="absolute inset-0 flex items-center justify-center z-20">
-        <h1 className="text-white text-3xl md:text-5xl font-bold text-center drop-shadow-2xl">
-          
-        </h1>
-      </div>
+    <div className="relative min-h-screen bg-black overflow-hidden">
+      {/* Animated Ocean Background */}
+      <motion.div 
+        className="fixed inset-0"
+        style={{ y: bgY }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-blue-950/50 to-purple-950/30" />
+        
+        {/* Animated gradient orbs */}
+        <div className="absolute top-0 -left-40 w-96 h-96 bg-cyan-500/20 rounded-full blur-[128px] animate-pulse" />
+        <div className="absolute top-1/2 -right-40 w-96 h-96 bg-blue-500/20 rounded-full blur-[128px] animate-pulse delay-1000" />
+        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-purple-500/20 rounded-full blur-[128px] animate-pulse delay-2000" />
+        
+        {/* Animated mesh gradient */}
+        <svg className="absolute inset-0 w-full h-full opacity-20">
+          <defs>
+            <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+              <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(34,211,238,0.1)" strokeWidth="1"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+      </motion.div>
 
-      {/* Mute/Unmute Button */}
-      <div className="absolute top-6 right-6 z-30">
-        <button
-          onClick={toggleMute}
-          className="flex items-center justify-center w-12 h-12 bg-black/50 hover:bg-black/70 rounded-full backdrop-blur-sm transition-all duration-200 border border-white/20 hover:border-white/40"
-          aria-label={isMuted ? "Unmute video" : "Mute video"}
+      {/* Content */}
+      <div className="relative z-10">
+        {/* Hero Section */}
+        <motion.section 
+          className="min-h-screen flex items-center justify-center px-4"
+          style={{ scale: scaleProgress }}
         >
-          {isMuted ? (
-            // Muted icon (speaker with X)
-            <svg 
-              className="w-6 h-6 text-white" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
+          <div className="text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
             >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" 
-              />
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" 
-              />
-            </svg>
-          ) : (
-            // Unmuted icon (speaker with sound waves)
-            <svg 
-              className="w-6 h-6 text-white" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
+              <h1 className="text-7xl md:text-9xl font-black mb-6">
+                <span className="block text-transparent bg-clip-text bg-gradient-to-b from-cyan-300 via-blue-500 to-purple-600 leading-none">
+                  OCEAN
+                </span>
+                <span className="block text-transparent bg-clip-text bg-gradient-to-b from-purple-400 via-pink-500 to-orange-500 leading-none">
+                  XPLORE
+                </span>
+              </h1>
+              <p className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto">
+                Dive into breathtaking underwater worlds through immersive 360° experiences
+              </p>
+            </motion.div>
+
+            {/* Scroll indicator */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.5 }}
+              className="absolute bottom-10 left-1/2 -translate-x-1/2"
             >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" 
+              <motion.div
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="w-6 h-10 border-2 border-cyan-500/50 rounded-full p-1"
+              >
+                <div className="w-1 h-3 bg-cyan-500 rounded-full mx-auto" />
+              </motion.div>
+            </motion.div>
+          </div>
+        </motion.section>
+
+        {/* Dive Experiences */}
+        <section className="relative py-32">
+          <div className="max-w-7xl mx-auto px-4">
+            {/* Section Header */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="text-center mb-20"
+            >
+              <h2 className="text-5xl md:text-6xl font-bold text-white mb-4">
+                Choose Your Adventure
+              </h2>
+              <p className="text-xl text-gray-400">
+                Each dive is a unique journey into the unknown
+              </p>
+            </motion.div>
+
+            {/* Cards Grid */}
+            <div className="grid gap-8 md:gap-12">
+              {diveStops.map((stop, idx) => (
+                <motion.article
+                  key={stop.id}
+                  initial={{ opacity: 0, x: idx % 2 === 0 ? -100 : 100 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ duration: 0.6, type: "spring" }}
+                  onMouseEnter={() => setHoveredCard(stop.id)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  className={`relative group ${idx % 2 === 0 ? 'md:pr-32' : 'md:pl-32'}`}
+                >
+                  <motion.div
+                    className="relative rounded-3xl overflow-hidden"
+                    whileHover={{ scale: 1.02 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {/* Background with parallax */}
+                    <motion.div
+                      className="absolute inset-0"
+                      animate={{
+                        scale: hoveredCard === stop.id ? 1.1 : 1,
+                      }}
+                      transition={{ duration: 0.6 }}
+                    >
+                      <div className={`absolute inset-0 bg-gradient-to-br ${stop.gradient} opacity-20`} />
+                      <img 
+                        src={stop.img} 
+                        alt=""
+                        className="w-full h-full object-cover opacity-20 mix-blend-overlay"
+                      />
+                    </motion.div>
+
+                    {/* Glass card */}
+                    <div className="relative bg-gray-900/80 backdrop-blur-xl border border-gray-800 p-10 md:p-16">
+                      <div className="max-w-2xl">
+                        {/* Number */}
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          whileInView={{ scale: 1 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.2, type: "spring" }}
+                          className="inline-block mb-6"
+                        >
+                          <span className={`text-8xl font-black bg-gradient-to-r ${stop.gradient} bg-clip-text text-transparent opacity-20`}>
+                            {String(idx + 1).padStart(2, '0')}
+                          </span>
+                        </motion.div>
+
+                        {/* Content */}
+                        <h3 className={`text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r ${stop.gradient} bg-clip-text text-transparent`}>
+                          {stop.title}
+                        </h3>
+                        
+                        <p className="text-gray-400 text-lg mb-8 leading-relaxed">
+                          {stop.description}
+                        </p>
+
+                        <div className="flex items-center gap-6 mb-8">
+                          <span className="flex items-center gap-2 text-gray-500">
+                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            {stop.duration}
+                          </span>
+                        </div>
+
+                        {/* CTA Button */}
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => setSelectedDive(stop)}
+                          className="relative group/btn overflow-hidden px-8 py-4 rounded-full"
+                          style={{ background: stop.accent }}
+                        >
+                          <span className="relative z-10 flex items-center gap-3 font-semibold text-white">
+                            Dive In
+                            <svg className="w-5 h-5 group-hover/btn:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                            </svg>
+                          </span>
+                          <motion.div
+                            className="absolute inset-0 bg-white/20"
+                            initial={{ x: '-100%' }}
+                            whileHover={{ x: 0 }}
+                            transition={{ duration: 0.3 }}
+                          />
+                        </motion.button>
+                      </div>
+
+                      {/* Side accent */}
+                      <motion.div
+                        className={`absolute top-1/2 ${idx % 2 === 0 ? 'right-0' : 'left-0'} w-1 bg-gradient-to-b ${stop.gradient}`}
+                        initial={{ height: 0 }}
+                        whileInView={{ height: '50%' }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: 0.3 }}
+                        style={{ transform: 'translateY(-50%)' }}
+                      />
+                    </div>
+                  </motion.div>
+                </motion.article>
+              ))}
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* 360° Video Modal */}
+      <AnimatePresence>
+        {selectedDive && !isClosing && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            >
+              {/* Backdrop */}
+              <motion.div
+                initial={{ backdropFilter: 'blur(0px)' }}
+                animate={{ backdropFilter: 'blur(20px)' }}
+                exit={{ backdropFilter: 'blur(0px)' }}
+                className="absolute inset-0 bg-black/80"
+                onClick={handleClose}
               />
-            </svg>
+  
+              {/* Modal Content */}
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ type: "spring", damping: 25 }}
+                className="relative w-full max-w-7xl h-[85vh]"
+              >
+                {/* Close Button */}
+                <motion.button
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={handleClose}
+                  className="absolute -top-12 right-0 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 transition-colors z-50"
+                >
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </motion.button>
+  
+                {/* Video Container */}
+                <div className="relative w-full h-full bg-black rounded-2xl overflow-hidden ring-1 ring-white/10">
+                  {/* Header */}
+                  <div className="absolute top-0 left-0 right-0 p-6 bg-gradient-to-b from-black/80 to-transparent z-10">
+                    <h3 className={`text-2xl font-bold bg-gradient-to-r ${selectedDive.gradient} bg-clip-text text-transparent`}>
+                      {selectedDive.title}
+                    </h3>
+                    <p className="text-gray-400 mt-1">{selectedDive.duration} • 360° Experience</p>
+                  </div>
+  
+                  <Video360Viewer 
+                    ref={viewerRef}
+                    videoSrc={selectedDive.videoSrc} 
+                    title={selectedDive.title}
+                    width="100%"
+                    height="100%"
+                    initialMuted={true}
+                    showInstructions={true}
+                  />
+                </div>
+              </motion.div>
+            </motion.div>
           )}
-        </button>
+        </AnimatePresence>
+  
+        {/* Minimal CSS for essential animations */}
+        <style jsx>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.4; }
+          }
+          
+          .animate-pulse {
+            animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+          }
+          
+          .delay-1000 {
+            animation-delay: 1s;
+          }
+          
+          .delay-2000 {
+            animation-delay: 2s;
+          }
+  
+          /* Smooth scroll */
+          html {
+            scroll-behavior: smooth;
+          }
+  
+          /* Custom scrollbar */
+          ::-webkit-scrollbar {
+            width: 8px;
+          }
+  
+          ::-webkit-scrollbar-track {
+            background: #000;
+          }
+  
+          ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #06b6d4, #8b5cf6);
+            border-radius: 4px;
+          }
+  
+          /* Slider styling */
+          input[type="range"] {
+            -webkit-appearance: none;
+          }
+  
+          input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: white;
+            cursor: pointer;
+            border-radius: 50%;
+            margin-top: -4px;
+          }
+  
+          input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: white;
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+          }
+  
+          input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: transparent;
+            border-radius: 4px;
+          }
+  
+          input[type="range"]::-moz-range-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: transparent;
+            border-radius: 4px;
+          }
+        `}</style>
       </div>
-
-      {/* Optional: Instructions for users */}
-      <div className="absolute bottom-12 left-6 z-30">
-        <div className="bg-black/50 backdrop-blur-sm rounded-lg p-3 border border-white/20">
-          <p className="text-white text-sm">
-            Use arrow keys to navigate • Click unmute for audio
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
+    );
+  }
